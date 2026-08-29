@@ -1,0 +1,3307 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dienstreise-Stundenzettel</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#2f4a63">
+<link rel="icon" href="./icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dienstreise">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#eef0ef;
+  --paper:#ffffff;
+  --ink:#1b232b;
+  --ink-soft:#5c6773;
+  --ink-faint:#8b95a1;
+  --line:#d7dbd9;
+  --steel:#2f4a63;
+  --steel-soft:#e2e8ee;
+  --orange:#d6540c;
+  --orange-soft:#fbe4d4;
+  --green:#3f7a52;
+  --green-soft:#e2eee5;
+  --red:#b3432b;
+  --red-soft:#f6e2dd;
+  --urlaub:#2f7ab8;
+  --sonderurlaub:#7c5cbf;
+  --focus:#1f6fb2;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(27,35,43,0.06), 0 4px 14px rgba(27,35,43,0.05);
+}
+
+*{ box-sizing:border-box; }
+
+html,body{ margin:0; padding:0; }
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size:15px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+
+.mono{ font-family:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+#app{ max-width:980px; margin:0 auto; padding:28px 20px 60px; }
+
+.print-only{ display:none; }
+
+a, button, input{ font-family:inherit; }
+
+button{ cursor:pointer; }
+
+:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; border-radius:4px; }
+
+.loading{ padding:60px 0; text-align:center; color:var(--ink-soft); }
+
+/* ---------- topbar ---------- */
+
+.topbar{
+  display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+  gap:18px; padding-bottom:20px; margin-bottom:18px; border-bottom:2px solid var(--ink);
+}
+
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--orange); font-weight:600; margin-bottom:4px;
+}
+
+.topbar h1{ margin:0; font-size:26px; font-weight:700; letter-spacing:-0.01em; }
+
+.stats-row{ display:flex; gap:22px; flex-wrap:wrap; }
+
+.stat{ display:flex; flex-direction:column; align-items:flex-end; min-width:64px; }
+
+.stat-value{ font-size:18px; font-weight:600; color:var(--steel); }
+
+.stat-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); margin-top:2px; }
+
+/* ---------- timeline (signature element) ---------- */
+
+.timeline-overview{ margin-bottom:22px; }
+
+.timeline-bar{
+  display:flex; width:100%; height:40px; border-radius:6px; overflow:hidden;
+  border:1px solid var(--line); background:var(--paper);
+}
+
+.tl-seg{
+  position:relative; display:flex; align-items:center; justify-content:center;
+  min-width:6px; border-right:2px solid var(--bg); overflow:hidden;
+  transition:filter .15s ease;
+}
+
+.tl-seg:last-child{ border-right:none; }
+
+.tl-seg:hover{ filter:brightness(1.08); }
+
+.seg-a{ background:var(--steel); }
+
+.seg-b{ background:var(--orange); }
+
+.tl-seg-label{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:600; color:#fff;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 8px;
+}
+
+.timeline-range{
+  display:flex; justify-content:space-between; font-size:11px; color:var(--ink-faint);
+  margin-top:6px;
+}
+
+/* ---------- year summary ---------- */
+
+.year-summary{ margin-bottom:22px; }
+
+.year-summary-header{
+  display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  margin-bottom:12px;
+}
+
+.year-summary-header h2{ margin:0; font-size:16px; font-weight:700; }
+
+.year-settings{
+  font-size:12px; color:var(--ink-soft); display:flex; align-items:center; gap:6px;
+}
+
+.year-settings input{
+  width:56px; border:1px solid var(--line); border-radius:6px; padding:4px 6px;
+  font-family:'IBM Plex Mono', monospace; font-size:12.5px; background:var(--paper); color:var(--ink);
+}
+
+.year-card-list{ display:flex; gap:14px; flex-wrap:wrap; }
+
+.year-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:14px 16px; flex:1 1 220px; min-width:200px; max-width:280px;
+}
+
+.year-card-year{ font-size:20px; font-weight:700; color:var(--steel); margin-bottom:8px; }
+
+.year-card-row{ display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; }
+
+.year-card-label{ color:var(--ink-soft); }
+
+.year-card-value{ font-weight:600; }
+
+.year-bar-track{
+  height:8px; border-radius:5px; background:var(--bg); overflow:hidden; margin-bottom:6px;
+}
+
+.year-bar-fill{ height:100%; background:var(--steel); border-radius:5px; }
+
+.year-bar-fill-hot{ background:var(--orange); }
+
+.year-card-ratio{ font-size:12px; color:var(--ink); font-weight:600; margin-bottom:8px; }
+
+.year-card-footer{ font-size:11.5px; color:var(--ink-faint); border-top:1px dashed var(--line); padding-top:8px; }
+
+.year-summary-hint{ font-size:11px; color:var(--ink-faint); margin:10px 0 0; }
+
+/* ---------- toolbar ---------- */
+
+.toolbar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+
+.toolbar-spacer{ flex:1; }
+
+.save-status{ font-size:11.5px; color:var(--green); min-width:0; }
+
+.save-status.err{ color:var(--red); }
+
+.btn{
+  font-family:'IBM Plex Sans', sans-serif; font-size:13.5px; font-weight:600;
+  padding:9px 16px; border-radius:7px; border:1px solid transparent; transition:background .15s ease, border-color .15s ease;
+}
+
+.btn-primary{ background:var(--ink); color:#fff; }
+
+.btn-primary:hover{ background:var(--steel); }
+
+.btn-ghost{ background:transparent; color:var(--ink); border-color:var(--line); }
+
+.btn-ghost:hover{ border-color:var(--ink-soft); background:var(--paper); }
+
+.btn-sm{ padding:6px 12px; font-size:12.5px; }
+
+.btn.danger, .btn-ghost.danger{ color:var(--red); }
+
+.btn.danger:hover, .btn-ghost.danger:hover{ border-color:var(--red); background:var(--red-soft); }
+
+.link-btn{
+  background:none; border:none; color:var(--ink-faint); font-size:12px; text-decoration:underline;
+  padding:0;
+}
+
+.link-btn.danger:hover{ color:var(--red); }
+
+.file-label{ cursor:pointer; }
+
+.visually-hidden{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+  clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+.footer-actions{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+
+.footer-hint{ display:block; font-size:11px; color:var(--ink-faint); margin-top:2px; }
+
+.footer-hint-warn{ color:var(--orange); }
+
+/* ---------- sync bar ---------- */
+
+.sync-bar{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  background:var(--paper); border:1px solid var(--line); border-radius:8px;
+  padding:9px 12px; margin-bottom:16px;
+}
+
+.sync-status-text{ font-size:12px; color:var(--ink-soft); }
+
+.sync-status-text.err{ color:var(--red); }
+
+.sync-pending{ box-shadow:0 0 0 3px var(--orange-soft); }
+
+.bin-id-display{
+  background:var(--bg); padding:2px 6px; border-radius:4px; font-weight:600; color:var(--steel);
+}
+
+.panel-hint{ font-size:12px; color:var(--ink-soft); line-height:1.5; margin:8px 0 0; }
+
+/* ---------- forms / panels ---------- */
+
+.panel{
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+  padding:18px 18px 16px; margin-bottom:18px; box-shadow:var(--shadow);
+}
+
+.panel-title{ font-weight:600; font-size:14px; margin-bottom:14px; color:var(--steel); }
+
+.form-grid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px 14px;
+}
+
+.field{ display:flex; flex-direction:column; gap:5px; }
+
+.field-wide{ grid-column:1 / -1; }
+
+.field-label{
+  display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--ink-soft); font-weight:600;
+}
+
+.field input{
+  border:1px solid var(--line); border-radius:6px; padding:8px 10px; font-size:14px;
+  background:var(--bg); color:var(--ink);
+}
+
+.field input:focus{ background:var(--paper); border-color:var(--steel); }
+
+/* ---------- durchsuchbares Dropdown (Land/Ort) ---------- */
+
+.combo-wrap{ position:relative; }
+
+.combo-input{
+  width:100%; border:1px solid var(--line); border-radius:6px; padding:8px 10px; font-size:14px;
+  background:var(--bg); color:var(--ink); box-sizing:border-box;
+}
+
+.combo-input:focus{ background:var(--paper); border-color:var(--steel); }
+
+.combo-wrap.combo-open .combo-input{ border-color:var(--steel); border-bottom-left-radius:0; border-bottom-right-radius:0; }
+
+.combo-dropdown{
+  display:none; position:absolute; top:100%; left:0; right:0; z-index:50;
+  background:var(--paper); border:1px solid var(--steel); border-top:none;
+  border-radius:0 0 8px 8px; max-height:240px; overflow-y:auto;
+  box-shadow:0 8px 20px rgba(27,35,43,0.15);
+}
+
+.combo-wrap.combo-open .combo-dropdown{ display:block; }
+
+.combo-option{
+  padding:10px 12px; font-size:14px; color:var(--ink); cursor:pointer; border-bottom:1px solid var(--line);
+}
+
+.combo-option:last-child{ border-bottom:none; }
+
+.combo-option:hover, .combo-option:active{ background:var(--steel-soft); color:var(--steel); }
+
+.combo-empty{ padding:10px 12px; font-size:12.5px; color:var(--ink-faint); font-style:italic; }
+
+
+.form-actions{ display:flex; gap:10px; margin-top:14px; }
+
+/* ---------- assignment cards ---------- */
+
+.card-list{ display:flex; flex-direction:column; gap:14px; }
+
+.dienstreise-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+
+.card-header{
+  display:flex; align-items:center; gap:14px; padding:14px 16px; cursor:pointer;
+}
+
+.card-header:hover{ background:#fafaf8; }
+
+.seq-badge{
+  flex:none; width:30px; height:30px; border-radius:6px; background:var(--steel-soft);
+  color:var(--steel); display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700;
+}
+
+.card-heading{ flex:1 1 auto; min-width:120px; }
+
+.card-place{ font-weight:700; font-size:15.5px; }
+
+.card-customer{ font-size:12.5px; color:var(--orange); font-weight:600; margin-top:1px; }
+
+.card-meta{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+
+.card-totals{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+
+.chip{
+  font-size:11.5px; padding:4px 9px; border-radius:20px; background:var(--bg); color:var(--ink-soft);
+  white-space:nowrap;
+}
+
+.chip b{ color:var(--ink); font-weight:600; }
+
+.chip-travel{ background:var(--steel-soft); color:var(--steel); }
+
+.chip-travel b{ color:var(--steel); }
+
+.chip-work{ background:var(--orange-soft); color:#8a3c08; }
+
+.chip-work b{ color:#8a3c08; }
+
+.chip-expense{ background:var(--green-soft); color:var(--green); }
+
+.chip-expense b{ color:var(--green); }
+
+.chevron-btn{
+  flex:none; width:28px; height:28px; border-radius:50%; border:1px solid var(--line);
+  background:var(--paper); font-size:16px; line-height:1; color:var(--ink-soft);
+}
+
+.card-body{ border-top:1px solid var(--line); padding:14px 16px 16px; }
+
+.assignment-note{
+  font-size:13px; color:var(--ink-soft); font-style:italic; margin-bottom:10px;
+}
+
+.rate-info-bar{
+  display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-soft);
+  background:var(--bg); border-radius:6px; padding:8px 12px; margin-bottom:10px;
+}
+
+.rate-info-bar b{ color:var(--ink); }
+
+/* ---------- day rows ---------- */
+
+.day-row{
+  display:grid; grid-template-columns:88px 1fr 1fr 82px 1.5fr 60px;
+  gap:8px 12px; align-items:center; padding:9px 4px; border-bottom:1px solid var(--line);
+}
+
+.day-row:last-child{ border-bottom:none; }
+
+.day-row-header{
+  font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint);
+  font-weight:600; padding-bottom:8px; border-bottom:1px solid var(--ink);
+}
+
+.d-field{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+
+.d-field .field-label{ display:none; }
+
+.d-hours{ font-size:11.5px; font-weight:600; }
+
+.travel-color{ color:var(--steel); }
+
+.work-color{ color:#8a3c08; }
+
+.d-empty{ color:var(--ink-faint); }
+
+.meal-icons{ font-size:11px; margin-left:4px; letter-spacing:1px; }
+
+.d-pause-note{ display:block; font-size:10px; color:var(--ink-faint); margin-top:1px; }
+
+.day-row-total{
+  font-weight:700; background:var(--bg); border-radius:6px; border-top:2px solid var(--ink);
+  margin-top:2px; padding-top:11px;
+}
+
+/* ---------- Verpflegungsrechner ---------- */
+
+.verpflegung-calc{
+  background:var(--bg); border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; gap:8px;
+}
+
+.verpflegung-calc-label{ font-size:12px; font-weight:600; color:var(--ink-soft); }
+
+.verpflegung-checks{ display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--ink); }
+
+.verpflegung-checks label{ display:flex; align-items:center; gap:6px; cursor:pointer; }
+
+.verpflegung-checks input{ width:15px; height:15px; margin:0; }
+
+/* ---------- Wochenübersicht ---------- */
+
+.week-summary{ margin-bottom:22px; }
+
+.week-table{
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+
+.week-row{
+  display:grid; grid-template-columns:70px 1fr 90px 90px 90px; gap:8px; align-items:center;
+  padding:8px 14px; border-bottom:1px solid var(--line); font-size:13px;
+}
+
+.week-row:last-child{ border-bottom:none; }
+
+.week-row-header{
+  font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint);
+  font-weight:600; background:var(--bg);
+}
+
+.week-range{ color:var(--ink-soft); }
+
+.week-soll{ color:var(--ink-faint); }
+
+.week-diff-pos{ color:var(--green); font-weight:600; }
+
+.week-diff-neg{ color:var(--red); font-weight:600; }
+
+/* ---------- Kalender ---------- */
+
+.calendar-section{ margin-bottom:22px; }
+
+.calendar-section h2{ margin:0 0 12px; font-size:16px; font-weight:700; }
+
+.calendar-header{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+
+.calendar-month-label{ font-weight:700; font-size:15px; flex:1; text-align:center; }
+
+.calendar-legend{
+  display:flex; flex-wrap:wrap; gap:8px 14px; font-size:11px; color:var(--ink-soft);
+  margin:0 0 10px;
+}
+
+.calendar-legend span{ display:flex; align-items:center; }
+
+.calendar-grid{ background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:10px; box-shadow:var(--shadow); }
+
+.cal-week-row{ display:grid; grid-template-columns:26px repeat(7, 1fr); gap:4px; margin-bottom:4px; }
+
+.cal-week-row-header{
+  font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint);
+  text-align:center; margin-bottom:6px;
+}
+
+.cal-kw{ display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--ink-faint); }
+
+.cal-day{
+  aspect-ratio:1; border:none; border-radius:6px; background:var(--bg);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink); padding:0;
+}
+
+.cal-day:hover{ filter:brightness(0.96); }
+
+.cal-day-outside{ opacity:.32; }
+
+.cal-day-today{ box-shadow:inset 0 0 0 2px var(--ink); font-weight:700; }
+
+.cal-day-selected{ box-shadow:inset 0 0 0 2px var(--focus); }
+
+.cal-tone-dienstreise{ background:var(--steel); color:#fff; }
+
+.cal-tone-holiday{ background:var(--orange-soft); color:#8a3c08; }
+
+.cal-tone-weekend{ background:#eef1f3; }
+
+.cal-tone-urlaub{ background:var(--urlaub); color:#fff; }
+
+.cal-tone-krankheit{ background:var(--red); color:#fff; }
+
+.cal-tone-sonderurlaub{ background:var(--sonderurlaub); color:#fff; }
+
+/* Tageszelle innerhalb der Auswahl kann mehrere tone-Klassen erben; letzte gewinnt per CSS-Reihenfolge oben. */
+
+.daypanel{
+  background:var(--paper); border:1px solid var(--line); border-radius:8px;
+  padding:12px 14px; margin-top:10px;
+}
+
+.daypanel-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+
+.daypanel-line{ font-size:13px; margin-bottom:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+
+.daypanel-muted{ color:var(--ink-faint); }
+
+.abwesenheiten-list{ margin-top:14px; }
+
+.abwesenheiten-list-title{ font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:8px; }
+
+.abwesenheit-row{
+  display:flex; align-items:center; gap:10px; padding:7px 2px; border-bottom:1px solid var(--line);
+  font-size:13px; flex-wrap:wrap;
+}
+
+.abwesenheit-row:last-child{ border-bottom:none; }
+
+.abwesenheit-typ-badge{ font-size:10.5px; font-weight:600; padding:2px 9px; border-radius:10px; color:#fff; white-space:nowrap; }
+
+.abwesenheit-typ-urlaub{ background:var(--urlaub); }
+
+.abwesenheit-typ-krankheit{ background:var(--red); }
+
+.abwesenheit-typ-sonderurlaub{ background:var(--sonderurlaub); }
+
+.abwesenheit-notiz{ color:var(--ink-soft); flex:1; min-width:80px; }
+
+.d-notiz{
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px;
+}
+
+.d-field-notiz{ min-width:0; }
+
+.d-actions{ display:flex; gap:6px; justify-content:flex-end; }
+
+.icon-btn{
+  width:26px; height:26px; border-radius:6px; border:1px solid var(--line); background:var(--paper);
+  font-size:12px; display:flex; align-items:center; justify-content:center; color:var(--ink-soft);
+}
+
+.icon-btn:hover{ border-color:var(--ink-soft); }
+
+.icon-btn.danger:hover{ border-color:var(--red); color:var(--red); background:var(--red-soft); }
+
+.empty-days{ padding:16px 4px; color:var(--ink-faint); font-size:13px; }
+
+.day-legend{ font-size:10.5px; color:var(--ink-faint); margin:2px 0 8px; }
+
+.legend-dot{
+  display:inline-block; width:9px; height:9px; border-radius:2px; vertical-align:middle;
+  margin:0 8px 0 3px;
+}
+
+.legend-weekend{ background:#eef1f3; border:1px solid var(--line); }
+
+.legend-holiday{ background:var(--orange-soft); border:1px solid var(--orange); }
+
+.day-row-weekend{ background:#f5f7f8; border-radius:6px; }
+
+.day-row-holiday{ background:var(--orange-soft); border-radius:6px; }
+
+.d-weekday{ color:var(--ink-faint); font-weight:700; margin-right:3px; }
+
+.day-row-weekend .d-weekday{ color:var(--steel); }
+
+.day-row-holiday .d-weekday{ color:#8a3c08; }
+
+.holiday-badge{
+  display:inline-block; width:fit-content; margin-top:3px; font-size:9.5px; font-weight:600;
+  text-transform:uppercase; letter-spacing:.05em; background:var(--orange); color:#fff;
+  padding:1px 7px; border-radius:10px;
+}
+
+.day-edit-form.day-row{
+  display:flex; flex-wrap:wrap; gap:10px 14px; background:var(--bg); border-radius:8px;
+  padding:12px; margin:6px 0; border-bottom:none;
+}
+
+.day-edit-form .field{ flex:1 1 120px; }
+
+.day-edit-form .field-wide{ flex:1 1 100%; }
+
+.day-edit-form .form-actions{ flex:1 1 100%; margin-top:2px; }
+
+/* ---------- time select (Stunde/Minute, harte Grenzen) ---------- */
+
+.time-select-group{ display:flex; align-items:center; gap:4px; }
+
+.time-select{
+  border:1px solid var(--line); border-radius:6px; padding:8px 6px; font-size:14px;
+  background:var(--bg); color:var(--ink); font-family:'IBM Plex Mono', monospace;
+}
+
+.time-select:focus{ background:var(--paper); border-color:var(--steel); }
+
+.time-sep{ color:var(--ink-faint); font-weight:600; }
+
+/* ---------- Reisezeit-Umschalter (Anreise/Abreise) ---------- */
+
+.reise-toggle-wrap{
+  background:var(--bg); border-radius:8px; padding:10px 12px;
+  display:flex; align-items:center; flex-wrap:wrap; gap:8px 10px;
+}
+
+.reise-toggle-checkbox{ width:16px; height:16px; margin:0; flex:none; }
+
+.reise-toggle-label{
+  font-size:12.5px; font-weight:600; color:var(--ink-soft); cursor:pointer; user-select:none;
+}
+
+.reise-fields-panel{ display:none; gap:12px; flex-wrap:wrap; flex-basis:100%; }
+
+.reise-toggle-checkbox:checked ~ .reise-fields-panel{ display:flex; }
+
+.reise-toggle-checkbox:checked ~ .reise-toggle-label{ color:var(--steel); }
+
+/* ---------- Serienerfassung (mehrere Tage auf einmal) ---------- */
+
+.bulk-toggle-wrap{
+  background:var(--orange-soft); border-radius:8px; padding:10px 12px;
+  display:flex; align-items:center; flex-wrap:wrap; gap:8px 10px;
+}
+
+.bulk-toggle-checkbox{ width:16px; height:16px; margin:0; flex:none; }
+
+.bulk-toggle-label{ font-size:12.5px; font-weight:600; color:#8a3c08; cursor:pointer; user-select:none; }
+
+.bulk-fields-panel{ display:none; gap:10px 14px; flex-wrap:wrap; flex-basis:100%; align-items:flex-end; }
+
+.bulk-toggle-checkbox:checked ~ .bulk-fields-panel{ display:flex; }
+
+.bulk-weekdays-wrap{ flex-basis:100%; display:flex; flex-direction:column; gap:4px; }
+
+.bulk-weekdays-wrap .field-label{ color:#8a3c08; }
+
+.bulk-weekdays{ display:flex; gap:8px; flex-wrap:wrap; font-size:12px; color:#8a3c08; }
+
+.bulk-weekdays label{ display:flex; align-items:center; gap:4px; cursor:pointer; }
+
+.bulk-weekdays input{ width:14px; height:14px; margin:0; }
+
+.bulk-hint{ flex-basis:100%; font-size:11px; color:#8a3c08; margin:2px 0 0; }
+
+/* ---------- Freier Tag ---------- */
+
+.frei-toggle-wrap{
+  background:var(--green-soft); border-radius:8px; padding:9px 12px;
+  display:flex; align-items:center; gap:8px;
+}
+
+.frei-toggle-checkbox{ width:16px; height:16px; margin:0; flex:none; }
+
+.frei-toggle-label{ font-size:12.5px; font-weight:600; color:var(--green); cursor:pointer; user-select:none; }
+
+.arbeit-fields-wrap{ display:flex; gap:12px; flex-wrap:wrap; flex:1 1 100%; }
+
+.arbeit-fields-hidden{ display:none; }
+
+.frei-tag-label{ font-size:12.5px; color:var(--green); font-weight:600; }
+
+/* ---------- Tage automatisch anlegen (beim Anlegen der Dienstreise) ---------- */
+
+.autoday-block{
+  background:var(--steel-soft); border-radius:8px; padding:12px 14px; margin-top:4px;
+}
+
+.autoday-title{ font-size:12.5px; font-weight:600; color:var(--steel); margin-bottom:10px; }
+
+.autoday-clear-times{ display:block; font-size:11.5px; margin:8px 0 2px; color:var(--steel); }
+
+.autoday-hint{ font-size:11px; color:var(--steel); margin:8px 0 0; }
+
+
+.card-actions{
+  display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; padding-top:12px; border-top:1px dashed var(--line);
+}
+
+/* ---------- empty state ---------- */
+
+.empty-state{
+  background:var(--paper); border:1px dashed var(--line); border-radius:var(--radius);
+  padding:40px 24px; text-align:center; color:var(--ink-soft);
+}
+
+.empty-state-title{ font-size:17px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+
+.empty-state p{ margin:0 0 16px; font-size:13.5px; }
+
+/* ---------- footer ---------- */
+
+.app-footer{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  margin-top:26px; padding-top:14px; border-top:1px solid var(--line);
+  font-size:11.5px; color:var(--ink-faint); flex-wrap:wrap;
+}
+
+/* ---------- responsive (screen only) ---------- */
+
+@media screen and (max-width:680px){
+  #app{ padding:18px 12px 48px; }
+  .topbar{ flex-direction:column; align-items:flex-start; }
+  .stats-row{ gap:16px; }
+  .card-header{ flex-wrap:wrap; }
+  .card-totals{ order:3; width:100%; justify-content:flex-start; margin-top:4px; }
+  .day-row-header{ display:none; }
+  .day-row:not(.day-edit-form){
+    grid-template-columns:1fr 1fr; grid-auto-rows:auto;
+  }
+  .d-field-notiz{ grid-column:1 / -1; }
+  .d-actions{ grid-column:1 / -1; justify-content:flex-start; }
+  .day-row:not(.day-row-header):not(.day-edit-form) .d-field .field-label{ display:block; }
+  .d-notiz{ white-space:normal; }
+  .year-card{ flex:1 1 100%; max-width:none; }
+  .week-row{ grid-template-columns:1fr 1fr; row-gap:4px; }
+  .week-row-header{ display:none; }
+  .week-range{ grid-column:1 / -1; order:-1; font-size:11.5px; }
+  .cal-week-row{ grid-template-columns:20px repeat(7, 1fr); gap:3px; }
+  .cal-day{ font-size:11px; border-radius:5px; }
+  .calendar-legend{ font-size:10.5px; gap:6px 10px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none !important; animation:none !important; }
+}
+
+/* ---------- error popup ---------- */
+
+.popup-backdrop{
+  position:fixed; inset:0; background:rgba(27,35,43,0.55);
+  display:flex; align-items:center; justify-content:center; padding:20px; z-index:1000;
+}
+
+.popup-box{
+  background:var(--paper); border-radius:12px; max-width:420px; width:100%;
+  padding:22px 22px 18px; box-shadow:0 12px 40px rgba(0,0,0,0.25);
+}
+
+.popup-title{ font-size:16px; font-weight:700; margin-bottom:10px; color:var(--red); }
+
+.popup-box-info .popup-title{ color:var(--green); }
+
+.popup-message{ font-size:14px; color:var(--ink); line-height:1.55; margin-bottom:18px; white-space:pre-line; }
+
+.popup-box .form-actions{ margin-top:0; justify-content:flex-end; }
+
+/* ---------- employee settings (footer) ---------- */
+
+.employee-settings{ display:flex; gap:14px; flex-wrap:wrap; margin-top:6px; }
+
+.employee-settings label{ font-size:11px; color:var(--ink-faint); display:flex; flex-direction:column; gap:3px; }
+
+.employee-settings input{
+  border:1px solid var(--line); border-radius:6px; padding:5px 8px; font-size:12.5px;
+  background:var(--paper); color:var(--ink); width:150px;
+}
+
+/* ---------- single-assignment print sheet ---------- */
+
+.single-print-sheet{ display:none; }
+
+.print-doc-header h1{ font-size:19px; margin:0 0 14px; }
+
+.print-meta-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; font-size:13px; margin-bottom:10px;
+}
+
+.print-label{ display:block; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:#555; }
+
+.print-blank{ display:inline-block; width:140px; border-bottom:1px solid #999; }
+
+.print-notiz{ font-size:12.5px; font-style:italic; color:#444; margin-bottom:10px; }
+
+.print-table{ width:100%; border-collapse:collapse; font-size:12px; margin-top:10px; }
+
+.print-table th, .print-table td{ border:1px solid #999; padding:5px 7px; text-align:left; }
+
+.print-table thead{ display:table-header-group; }
+
+.print-table .num{ text-align:right; font-family:'IBM Plex Mono', monospace; }
+
+.print-table tfoot td{ border-top:2px solid #333; }
+
+.print-signatures{ display:flex; gap:60px; margin-top:50px; }
+
+.sig-block{ flex:1; font-size:11px; color:#444; }
+
+.sig-line{ border-top:1px solid #333; margin-bottom:5px; height:1px; }
+
+/* ---------- print ---------- */
+
+@media print{
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  body{ background:#fff; }
+  #app{ max-width:100%; padding:0; }
+  .no-print, .no-print *{ display:none !important; }
+  .print-only{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:.08em;
+    color:#555; margin-bottom:10px; }
+  .topbar{ border-bottom:2px solid #000; }
+  .timeline-bar{ border:1px solid #999; }
+  .dienstreise-card{ box-shadow:none; border:1px solid #999; break-inside:avoid; margin-bottom:10px; }
+  .card-header{ cursor:default; }
+  .day-row-header{ display:grid !important; }
+  .chip{ border:1px solid #ccc; }
+
+  body.print-single-mode #app > *:not(.single-print-sheet){ display:none !important; }
+  body.print-single-mode .single-print-sheet{ display:block !important; }
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ===================== Dienstreise-Stundenzettel ===================== */
+
+let state = { assignments: [], abwesenheiten: [], updatedAt: 0, settings: { urlaubstage: 30, sollWochenstunden: 40 } };
+let ui = {
+  expanded: new Set(),
+  showAddAssignment: false,
+  editingAssignmentId: null,
+  addingDayFor: null,
+  editingDayId: null,
+  lastDate: null,
+  localSaveError: false,
+  errorPopup: null,
+  showAllWeeks: false,
+  showSyncSettings: false,
+  syncStatus: 'idle',
+  syncError: null,
+  calendarMonth: null,
+  selectedCalDay: null,
+  showAddAbwesenheit: false,
+  editingAbwesenheitId: null,
+  printSingleId: null
+};
+let loaded = false;
+
+/* ----------------------- helpers: id / esc ----------------------- */
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ----------------------- error popup ----------------------- */
+
+function queueError(title, message, kind) {
+  ui.errorPopup = { title, message, kind: kind || 'error' };
+}
+
+function showError(title, message) {
+  queueError(title, message, 'error');
+  render();
+}
+
+function showInfo(title, message) {
+  queueError(title, message, 'info');
+  render();
+}
+
+function renderErrorPopup() {
+  if (!ui.errorPopup) return '';
+  const isInfo = ui.errorPopup.kind === 'info';
+  const icon = isInfo ? '✅' : '⚠️';
+  return `
+    <div class="popup-backdrop no-print" data-action="close-error-popup">
+      <div class="popup-box ${isInfo ? 'popup-box-info' : ''}" role="alertdialog" aria-modal="true" aria-labelledby="popup-title" onclick="event.stopPropagation()">
+        <div class="popup-title" id="popup-title">${icon} ${esc(ui.errorPopup.title)}</div>
+        <div class="popup-message">${esc(ui.errorPopup.message)}</div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" data-action="close-error-popup">Verstanden</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ----------------------- helpers: dates/times ----------------------- */
+
+function pad(n) { return n.toString().padStart(2, '0'); }
+function pad2(n) { return n.toString().padStart(2, '0'); }
+
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function fmtDateDE(iso) {
+  if (!iso) return '—';
+  const parts = iso.split('-');
+  if (parts.length !== 3) return iso;
+  const [y, m, d] = parts;
+  return `${d}.${m}.${y}`;
+}
+
+function addDaysISO(iso, n) {
+  const d = new Date(iso + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function daysBetweenInclusive(startIso, endIso) {
+  const s = new Date(startIso + 'T00:00:00');
+  const e = new Date(endIso + 'T00:00:00');
+  return Math.round((e - s) / 86400000) + 1;
+}
+
+function timeToMinutes(t) {
+  if (!t) return null;
+  const bits = t.split(':');
+  if (bits.length < 2) return null;
+  const h = Number(bits[0]), m = Number(bits[1]);
+  if (Number.isNaN(h) || Number.isNaN(m)) return null;
+  return h * 60 + m;
+}
+
+function durationHours(start, end) {
+  const s = timeToMinutes(start);
+  const e = timeToMinutes(end);
+  if (s === null || e === null) return 0;
+  let diff = e - s;
+  if (diff < 0) diff += 24 * 60;
+  return Math.round((diff / 60) * 100) / 100;
+}
+
+/* ----------------------- Zeit-Dropdowns (Stunde/Minute, harte Grenzen) ----------------------- */
+
+function timeSelectHTML(name, value) {
+  const parts = (value || '').split(':');
+  const vh = parts[0] || '';
+  const vm = parts[1] || '';
+  let hOpts = '<option value="">--</option>';
+  for (let h = 0; h < 24; h++) {
+    const hh = pad2(h);
+    hOpts += `<option value="${hh}"${vh === hh ? ' selected' : ''}>${hh}</option>`;
+  }
+  let mOpts = '<option value="">--</option>';
+  for (let m = 0; m < 60; m++) {
+    const mm = pad2(m);
+    mOpts += `<option value="${mm}"${vm === mm ? ' selected' : ''}>${mm}</option>`;
+  }
+  return `<div class="time-select-group">
+      <select name="${name}_h" class="time-select" aria-label="Stunde">${hOpts}</select>
+      <span class="time-sep">:</span>
+      <select name="${name}_m" class="time-select" aria-label="Minute">${mOpts}</select>
+    </div>`;
+}
+
+function combineTimeFromForm(fd, name) {
+  const h = (fd.get(name + '_h') || '').toString();
+  const m = (fd.get(name + '_m') || '').toString();
+  if (!h || !m) return '';
+  return `${h}:${m}`;
+}
+
+function isEdgeDay(a, dateISO) {
+  if (!dateISO) return false;
+  return dateISO === a.start || (a.ende && dateISO === a.ende);
+}
+
+/* ----------------------- Länder-Tagessätze (externe JSON-Datei, pro Jahr) ----------------------- */
+
+let countryRatesByYear = null; // { "2026": { quelle, vollstaendig, saetze: { "Spanien": 41, ... } }, "2025": {...} }
+
+async function loadLaenderSaetze() {
+  try {
+    const res = await fetch('./laendersaetze.json');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.jahre && typeof data.jahre === 'object') {
+      countryRatesByYear = data.jahre;
+    }
+  } catch (e) {
+    // Datei nicht erreichbar (z.B. als Einzeldatei/innerhalb von Claude geöffnet) - kein Problem,
+    // Tagessatz bleibt dann einfach manuell einzutragen.
+  }
+}
+
+function latestRatesYear() {
+  if (!countryRatesByYear) return null;
+  const years = Object.keys(countryRatesByYear).map(Number).filter(n => !Number.isNaN(n));
+  return years.length ? Math.max(...years) : null;
+}
+
+// Gibt den Tagessatz NUR zurück, wenn er exakt für dieses Jahr vorliegt - fällt bewusst
+// NICHT auf ein anderes Jahr zurück, damit alte Dienstreisen nicht mit einem falschen
+// (z.B. neueren) Satz vorbefüllt werden.
+function lookupLaenderSatz(land, ort, year) {
+  if (!countryRatesByYear || !land || !year) return null;
+  const yearData = countryRatesByYear[String(year)];
+  if (!yearData || !yearData.saetze) return null;
+  const landTrim = land.trim();
+  let landEntry = yearData.saetze[landTrim];
+  if (!landEntry) {
+    const lowerLand = landTrim.toLowerCase();
+    const key = Object.keys(yearData.saetze).find(k => k.toLowerCase() === lowerLand);
+    if (key) landEntry = yearData.saetze[key];
+  }
+  if (!landEntry) return null;
+
+  const ortTrim = (ort || '').trim();
+  if (ortTrim && landEntry.orte) {
+    if (landEntry.orte[ortTrim] !== undefined) return landEntry.orte[ortTrim];
+    const lowerOrt = ortTrim.toLowerCase();
+    const ortKey = Object.keys(landEntry.orte).find(k => k.toLowerCase() === lowerOrt);
+    if (ortKey) return landEntry.orte[ortKey];
+  }
+  return landEntry.default || null;
+}
+
+function laenderTabelleVeraltet() {
+  const latest = latestRatesYear();
+  if (!latest) return false;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  if (year > latest) return true;
+  if (year === latest && month >= 12) return true; // BMF veröffentlicht i.d.R. Anfang Dezember fürs Folgejahr
+  return false;
+}
+
+
+/* ----------------------- Verpflegungsmehraufwand (§9 Abs. 4a EStG) ----------------------- */
+
+function verpflegungBetrag(tagessatz, isEdge, fruehstueck, mittag, abend) {
+  const satz = Number(tagessatz) || 0;
+  if (satz <= 0) return 0;
+  // An-/Abreisetag = 2/3 des vollen Tagessatzes, auf volle Euro gerundet
+  // (verifiziert gegen die offizielle BMF-Auslandstagegeld-Tabelle: 104/105 Länder stimmen exakt).
+  let betrag = isEdge ? Math.round(satz * 2 / 3) : satz;
+  if (fruehstueck) betrag -= satz * 0.2;
+  if (mittag) betrag -= satz * 0.4;
+  if (abend) betrag -= satz * 0.4;
+  return Math.max(Math.round(betrag * 100) / 100, 0);
+}
+
+// Legt für jeden Kalendertag im Bereich [vonDatum, bisDatum] einen Tageseintrag an
+// (durchgängige Verpflegungspauschale, §9 Abs. 4a EStG) - Arbeitszeit nur an den in
+// activeWeekdays (Set von 0=So..6=Sa) enthaltenen Wochentagen. Überspringt bereits
+// vorhandene Daten. Gibt { created, skipped } zurück.
+function generateDaysForRange(a, vonDatum, bisDatum, activeWeekdays, arbeitStart, arbeitEnde, manualSpesen, fruehstueck, mittag, abend, notiz) {
+  if (!a.tage) a.tage = [];
+  const existingDates = new Set(a.tage.map(d => d.datum));
+  const hasTagessatz = a.tagessatz > 0;
+  let created = 0, skipped = 0;
+  let cur = vonDatum;
+  let guard = 0;
+  while (cur <= bisDatum && guard < 2000) {
+    const dow = new Date(cur + 'T00:00:00').getDay();
+    const isWorkDay = activeWeekdays.has(dow) && !!arbeitStart && !!arbeitEnde;
+    if (existingDates.has(cur)) {
+      skipped++;
+    } else {
+      const tagSpesen = hasTagessatz
+        ? verpflegungBetrag(a.tagessatz, isEdgeDay(a, cur), fruehstueck, mittag, abend)
+        : manualSpesen;
+      a.tage.push({
+        id: uid(), datum: cur, reiseStart: '', reiseEnde: '',
+        arbeitStart: isWorkDay ? arbeitStart : '',
+        arbeitEnde: isWorkDay ? arbeitEnde : '',
+        frei: !isWorkDay,
+        spesen: tagSpesen, fruehstueck, mittag, abend, notiz
+      });
+      existingDates.add(cur);
+      created++;
+    }
+    cur = addDaysISO(cur, 1);
+    guard++;
+  }
+  return { created, skipped };
+}
+
+function fmtHours(h) {
+  return (h || 0).toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + ' h';
+}
+
+function fmtEuro(v) {
+  return (v || 0).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+}
+
+function numDE(n) {
+  return (Math.round((n || 0) * 100) / 100).toFixed(2).replace('.', ',');
+}
+
+/* ----------------------- derived calculations ----------------------- */
+
+function dayReise(d) { return durationHours(d.reiseStart, d.reiseEnde); }
+
+function pauseMinutesForDuration(hoursRaw) {
+  if (hoursRaw > 9) return 45;
+  if (hoursRaw > 6) return 30;
+  return 0;
+}
+
+function dayArbeitRaw(d) { return durationHours(d.arbeitStart, d.arbeitEnde); }
+
+function dayArbeitPauseMin(d) { return pauseMinutesForDuration(dayArbeitRaw(d)); }
+
+function dayArbeit(d) {
+  const raw = dayArbeitRaw(d);
+  const pause = pauseMinutesForDuration(raw) / 60;
+  return Math.round(Math.max(raw - pause, 0) * 100) / 100;
+}
+
+function assignmentTotals(a) {
+  let reise = 0, arbeit = 0, spesen = 0;
+  (a.tage || []).forEach(d => {
+    reise += dayReise(d);
+    arbeit += dayArbeit(d);
+    spesen += Number(d.spesen) || 0;
+  });
+  return {
+    reise: Math.round(reise * 100) / 100,
+    arbeit: Math.round(arbeit * 100) / 100,
+    spesen: Math.round(spesen * 100) / 100,
+    tage: (a.tage || []).length
+  };
+}
+
+function grandTotals() {
+  let reise = 0, arbeit = 0, spesen = 0;
+  state.assignments.forEach(a => {
+    const t = assignmentTotals(a);
+    reise += t.reise; arbeit += t.arbeit; spesen += t.spesen;
+  });
+  return {
+    reise: Math.round(reise * 100) / 100,
+    arbeit: Math.round(arbeit * 100) / 100,
+    spesen: Math.round(spesen * 100) / 100,
+    einsaetze: state.assignments.length
+  };
+}
+
+function sortedAsc() {
+  return [...state.assignments].sort((a, b) => (a.start || '').localeCompare(b.start || ''));
+}
+
+function placeLabel(a) {
+  return a.ort ? `${a.ort}, ${a.land}` : (a.land || 'Unbenannt');
+}
+
+/* ----------------------- autocomplete lists ----------------------- */
+
+function allKnownLaender() {
+  const names = new Set(state.assignments.map(a => (a.land || '').trim()).filter(Boolean));
+  if (countryRatesByYear) {
+    Object.values(countryRatesByYear).forEach(yearData => {
+      if (yearData && yearData.saetze) Object.keys(yearData.saetze).forEach(l => names.add(l));
+    });
+  }
+  return [...names].sort((a, b) => a.localeCompare(b, 'de'));
+}
+
+function allKnownOrteForLand(land) {
+  const names = new Set(
+    state.assignments.filter(a => (a.land || '').trim().toLowerCase() === (land || '').trim().toLowerCase())
+      .map(a => (a.ort || '').trim()).filter(Boolean)
+  );
+  if (countryRatesByYear && land) {
+    const lowerLand = land.trim().toLowerCase();
+    Object.values(countryRatesByYear).forEach(yearData => {
+      if (!yearData || !yearData.saetze) return;
+      const key = Object.keys(yearData.saetze).find(k => k.toLowerCase() === lowerLand);
+      const entry = key ? yearData.saetze[key] : null;
+      if (entry && entry.orte) Object.keys(entry.orte).forEach(o => names.add(o));
+    });
+  }
+  return [...names].sort((a, b) => a.localeCompare(b, 'de'));
+}
+
+function uniqueKundeList() {
+  return [...new Set(state.assignments.map(a => (a.kunde || '').trim()).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, 'de'));
+}
+
+function renderKundeDatalist(idSuffix) {
+  const opts = uniqueKundeList().map(k => `<option value="${esc(k)}">`).join('');
+  return `<datalist id="kunde-list-${idSuffix}">${opts}</datalist>`;
+}
+
+/* ----------------------- durchsuchbares Dropdown (Land/Ort) ----------------------- */
+
+function comboFieldHTML(name, value, placeholder, source, required) {
+  return `
+    <div class="combo-wrap" role="combobox" aria-expanded="false">
+      <input type="text" name="${name}" class="combo-input" autocomplete="off" ${required ? 'required' : ''}
+        placeholder="${esc(placeholder)}" value="${esc(value || '')}" data-combo-source="${source}">
+      <div class="combo-dropdown" role="listbox"></div>
+    </div>`;
+}
+
+function getComboSource(input) {
+  const source = input.dataset.comboSource;
+  if (source === 'land') return allKnownLaender();
+  if (source === 'ort') {
+    const form = input.closest('form');
+    const landInput = form ? form.querySelector('input[name="land"]') : null;
+    return allKnownOrteForLand(landInput ? landInput.value : '');
+  }
+  return [];
+}
+
+function renderComboOptions(input) {
+  const wrap = input.closest('.combo-wrap');
+  const dropdown = wrap && wrap.querySelector('.combo-dropdown');
+  if (!wrap || !dropdown) return;
+  const all = getComboSource(input);
+  const filter = input.value.trim().toLowerCase();
+  const filtered = filter ? all.filter(s => s.toLowerCase().includes(filter)) : all;
+  if (all.length === 0) {
+    dropdown.innerHTML = '';
+    closeCombo(wrap);
+    return;
+  }
+  dropdown.innerHTML = filtered.length
+    ? filtered.slice(0, 200).map(s => `<div class="combo-option" role="option" data-value="${esc(s)}">${esc(s)}</div>`).join('')
+    : '<div class="combo-empty">Keine Treffer – wird als Freitext übernommen</div>';
+  wrap.classList.add('combo-open');
+  wrap.setAttribute('aria-expanded', 'true');
+}
+
+function closeCombo(wrap) {
+  if (!wrap) return;
+  wrap.classList.remove('combo-open');
+  wrap.setAttribute('aria-expanded', 'false');
+}
+
+function closeAllCombos() {
+  document.querySelectorAll('.combo-wrap.combo-open').forEach(closeCombo);
+}
+
+/* ----------------------- weekday / weekend / feiertage ----------------------- */
+
+const WEEKDAY_ABBR = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+
+function weekdayAbbr(dateISO) {
+  const d = new Date(dateISO + 'T00:00:00');
+  return WEEKDAY_ABBR[d.getDay()];
+}
+
+function isWeekendISO(dateISO) {
+  const d = new Date(dateISO + 'T00:00:00');
+  const day = d.getDay();
+  return day === 0 || day === 6;
+}
+
+function isGermanAssignment(a) {
+  const l = (a.land || '').trim().toLowerCase();
+  return l === 'deutschland' || l === 'germany' || l === 'de' || l === 'brd';
+}
+
+const holidayCache = {};
+
+function easterSundayISO(year) {
+  // Gauss'sche Osterformel
+  const a = year % 19;
+  const b = Math.floor(year / 100);
+  const c = year % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const monthDay = h + l - 7 * m + 114;
+  const month = Math.floor(monthDay / 31);
+  const day = (monthDay % 31) + 1;
+  return `${year}-${pad(month)}-${pad(day)}`;
+}
+
+function germanHolidaysForYear(year) {
+  if (holidayCache[year]) return holidayCache[year];
+  const easter = easterSundayISO(year);
+  const map = new Map([
+    [`${year}-01-01`, 'Neujahr'],
+    [addDaysISO(easter, -2), 'Karfreitag'],
+    [addDaysISO(easter, 1), 'Ostermontag'],
+    [`${year}-05-01`, 'Tag der Arbeit'],
+    [addDaysISO(easter, 39), 'Christi Himmelfahrt'],
+    [addDaysISO(easter, 50), 'Pfingstmontag'],
+    [`${year}-10-03`, 'Tag der Deutschen Einheit'],
+    [`${year}-12-25`, '1. Weihnachtstag'],
+    [`${year}-12-26`, '2. Weihnachtstag']
+  ]);
+  holidayCache[year] = map;
+  return map;
+}
+
+function germanHolidayName(dateISO) {
+  const year = Number(dateISO.slice(0, 4));
+  if (!year) return null;
+  return germanHolidaysForYear(year).get(dateISO) || null;
+}
+
+/* ----------------------- Jahresübersicht ----------------------- */
+
+function countWeekdaysBetween(startISO, endISO) {
+  if (!startISO || !endISO || startISO > endISO) return 0;
+  let count = 0;
+  let cur = startISO;
+  let guard = 0;
+  while (cur <= endISO && guard < 20000) {
+    if (!isWeekendISO(cur)) count++;
+    cur = addDaysISO(cur, 1);
+    guard++;
+  }
+  return count;
+}
+
+function germanHolidayWeekdayCount(year) {
+  let count = 0;
+  germanHolidaysForYear(year).forEach((name, dateISO) => {
+    if (!isWeekendISO(dateISO)) count++;
+  });
+  return count;
+}
+
+function getUrlaubstage() {
+  return (state.settings && typeof state.settings.urlaubstage === 'number') ? state.settings.urlaubstage : 30;
+}
+
+function maxWorkingDays(year) {
+  const base = 5 * 4 * 12; // 240
+  const feiertage = germanHolidayWeekdayCount(year);
+  const urlaub = getUrlaubstage();
+  return Math.max(base - feiertage - urlaub, 0);
+}
+
+function assignmentEffectiveEnd(a) {
+  const today = todayISO();
+  return a.ende || (a.start <= today ? today : a.start);
+}
+
+/* ----------------------- Kalender ----------------------- */
+
+const ABWESENHEIT_LABELS = { urlaub: 'Urlaub', krankheit: 'Krankheit', sonderurlaub: 'Sonderurlaub' };
+
+function currentYearMonth() { return todayISO().slice(0, 7); }
+
+function shiftYearMonth(yearMonth, delta) {
+  const [y, m] = yearMonth.split('-').map(Number);
+  const d = new Date(y, m - 1 + delta, 1);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
+}
+
+function getMonthGrid(yearMonth) {
+  const [y, m] = yearMonth.split('-').map(Number);
+  const firstOfMonth = `${y}-${pad(m)}-01`;
+  const firstWeekday = new Date(firstOfMonth + 'T00:00:00').getDay(); // 0=So..6=Sa
+  const leadDays = firstWeekday === 0 ? 6 : firstWeekday - 1; // Woche beginnt Montag
+  let cur = addDaysISO(firstOfMonth, -leadDays);
+  const weeks = [];
+  for (let w = 0; w < 6; w++) {
+    const week = [];
+    for (let d = 0; d < 7; d++) { week.push(cur); cur = addDaysISO(cur, 1); }
+    weeks.push(week);
+  }
+  return weeks;
+}
+
+function abwesenheitOnDay(dateISO) {
+  return (state.abwesenheiten || []).find(x => x.start <= dateISO && dateISO <= (x.ende || x.start)) || null;
+}
+
+function assignmentsOnDay(dateISO) {
+  return state.assignments.filter(a => a.start && a.start <= dateISO && dateISO <= assignmentEffectiveEnd(a));
+}
+
+function getDayInfo(dateISO) {
+  return {
+    holiday: germanHolidayName(dateISO),
+    weekend: isWeekendISO(dateISO),
+    dienstreisen: assignmentsOnDay(dateISO),
+    abwesenheit: abwesenheitOnDay(dateISO)
+  };
+}
+
+function yearsTouched() {
+  const years = new Set();
+  state.assignments.forEach(a => {
+    if (!a.start) return;
+    const end = assignmentEffectiveEnd(a);
+    const startYear = Number(a.start.slice(0, 4));
+    const endYear = Number(end.slice(0, 4));
+    if (!startYear || !endYear) return;
+    for (let y = startYear; y <= endYear; y++) years.add(y);
+  });
+  return [...years].sort((a, b) => b - a);
+}
+
+function yearStats(year) {
+  const yearStart = `${year}-01-01`;
+  const yearEnd = `${year}-12-31`;
+  let einsaetze = 0;
+  let tageUnterwegs = 0;
+  let arbeitH = 0, reiseH = 0, spesen = 0;
+  state.assignments.forEach(a => {
+    if (!a.start) return;
+    const end = assignmentEffectiveEnd(a);
+    const overlapStart = a.start > yearStart ? a.start : yearStart;
+    const overlapEnd = end < yearEnd ? end : yearEnd;
+    if (overlapStart > overlapEnd) return;
+    einsaetze++;
+    tageUnterwegs += countWeekdaysBetween(overlapStart, overlapEnd);
+    (a.tage || []).forEach(d => {
+      if (d.datum && d.datum >= yearStart && d.datum <= yearEnd) {
+        arbeitH += dayArbeit(d);
+        reiseH += dayReise(d);
+        spesen += Number(d.spesen) || 0;
+      }
+    });
+  });
+  return {
+    year, einsaetze, tageUnterwegs,
+    maxTage: maxWorkingDays(year),
+    arbeitH: Math.round(arbeitH * 100) / 100,
+    reiseH: Math.round(reiseH * 100) / 100,
+    spesen: Math.round(spesen * 100) / 100
+  };
+}
+
+/* ----------------------- Wochenübersicht ----------------------- */
+
+function getMondayISO(dateISO) {
+  const d = new Date(dateISO + 'T00:00:00');
+  const day = d.getDay(); // 0=So..6=Sa
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function getISOWeekNumber(dateISO) {
+  const d = new Date(dateISO + 'T00:00:00');
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+  const yearStart = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+}
+
+function getSollWochenstunden() {
+  return (state.settings && typeof state.settings.sollWochenstunden === 'number') ? state.settings.sollWochenstunden : 40;
+}
+
+function weeklyStats() {
+  const weeks = new Map();
+  state.assignments.forEach(a => {
+    (a.tage || []).forEach(d => {
+      if (!d.datum) return;
+      const monday = getMondayISO(d.datum);
+      if (!weeks.has(monday)) weeks.set(monday, { arbeitH: 0, reiseH: 0 });
+      const w = weeks.get(monday);
+      w.arbeitH += dayArbeit(d);
+      w.reiseH += dayReise(d);
+    });
+  });
+  return [...weeks.entries()]
+    .map(([monday, v]) => ({
+      monday,
+      sonntag: addDaysISO(monday, 6),
+      kw: getISOWeekNumber(monday),
+      arbeitH: Math.round(v.arbeitH * 100) / 100,
+      reiseH: Math.round(v.reiseH * 100) / 100
+    }))
+    .sort((a, b) => b.monday.localeCompare(a.monday));
+}
+
+/* ----------------------- persistence: local (browser) ----------------------- */
+
+const LOCAL_KEY = 'dienstreise-stundenzettel-local-v1';
+const OLD_CLAUDE_STORAGE_KEY = 'montage-stundenzettel-data-v1'; // ganz frühere Version, für einmalige Migration
+
+let storageBackend = 'memory'; // 'claude' | 'local' | 'memory'
+const memoryStore = {};
+
+async function detectStorageBackend() {
+  if (typeof window.storage !== 'undefined' && window.storage
+      && typeof window.storage.get === 'function' && typeof window.storage.set === 'function') {
+    return 'claude';
+  }
+  try {
+    const testKey = '__dienstreise_storage_test__';
+    window.localStorage.setItem(testKey, '1');
+    window.localStorage.removeItem(testKey);
+    return 'local';
+  } catch (e) {
+    return 'memory';
+  }
+}
+
+async function storageGet(key) {
+  if (storageBackend === 'claude') {
+    try {
+      const res = await window.storage.get(key, false);
+      return res && res.value ? res.value : null;
+    } catch (e) { return null; }
+  }
+  if (storageBackend === 'local') {
+    try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+  return Object.prototype.hasOwnProperty.call(memoryStore, key) ? memoryStore[key] : null;
+}
+
+async function storageSet(key, value) {
+  if (storageBackend === 'claude') {
+    try { await window.storage.set(key, value, false); return true; } catch (e) { return false; }
+  }
+  if (storageBackend === 'local') {
+    try { window.localStorage.setItem(key, value); return true; } catch (e) { return false; }
+  }
+  memoryStore[key] = value;
+  return true;
+}
+
+let lastPersistOk = true;
+
+async function persist() {
+  state.updatedAt = Date.now();
+  const ok = await storageSet(LOCAL_KEY, JSON.stringify(state));
+  ui.localSaveError = !ok;
+  ui.syncStatus = 'idle';
+  ui.syncError = null;
+  if (!ok && lastPersistOk) {
+    showError('Speichern fehlgeschlagen',
+      'Deine letzte Änderung konnte nicht dauerhaft gespeichert werden. Sie bleibt für diese Sitzung sichtbar, geht aber beim Schließen verloren. Bitte exportiere zur Sicherheit eine Sicherung (unten in der Fußzeile).');
+  }
+  lastPersistOk = ok;
+}
+
+/* ----------------------- Cloud-Sync (jsonbin.io, pro Person ein eigenes Konto) ----------------------- */
+
+const SYNC_CONFIG_KEY = 'dienstreise-stundenzettel-sync-v1';
+const JSONBIN_BASE = 'https://api.jsonbin.io/v3/b';
+
+function getSyncConfig() {
+  try {
+    const raw = localStorage.getItem(SYNC_CONFIG_KEY);
+    if (!raw) return null;
+    const cfg = JSON.parse(raw);
+    return cfg && cfg.apiKey ? cfg : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function setSyncConfig(cfg) {
+  try { localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(cfg)); } catch (e) { /* ignore */ }
+}
+
+function clearSyncConfig() {
+  try { localStorage.removeItem(SYNC_CONFIG_KEY); } catch (e) { /* ignore */ }
+}
+
+function hasPendingChanges() {
+  const cfg = getSyncConfig();
+  if (!cfg || !cfg.binId) return false;
+  return (state.updatedAt || 0) > (cfg.lastSyncedAt || 0);
+}
+
+async function jsonbinCreate(apiKey, data) {
+  const res = await fetch(JSONBIN_BASE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey, 'X-Bin-Name': 'dienstreise-stundenzettel' },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(`Anlegen fehlgeschlagen (Status ${res.status}). Master-Key prüfen.`);
+  const json = await res.json();
+  if (!json || !json.metadata || !json.metadata.id) throw new Error('Unerwartete Antwort beim Anlegen.');
+  return json.metadata.id;
+}
+
+async function jsonbinRead(apiKey, binId) {
+  const res = await fetch(`${JSONBIN_BASE}/${binId}/latest`, { method: 'GET', headers: { 'X-Master-Key': apiKey } });
+  if (!res.ok) throw new Error(`Lesen fehlgeschlagen (Status ${res.status}). Master-Key/Bin-ID prüfen.`);
+  const json = await res.json();
+  return json && json.record ? json.record : null;
+}
+
+async function jsonbinUpdate(apiKey, binId, data) {
+  const res = await fetch(`${JSONBIN_BASE}/${binId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(`Speichern fehlgeschlagen (Status ${res.status}).`);
+}
+
+async function doSync() {
+  const cfg = getSyncConfig();
+  if (!cfg) {
+    ui.showSyncSettings = true;
+    render();
+    return;
+  }
+  ui.syncStatus = 'running';
+  ui.syncError = null;
+  render();
+  try {
+    let binId = cfg.binId;
+    if (!binId) {
+      binId = await jsonbinCreate(cfg.apiKey, state);
+      cfg.binId = binId;
+    } else {
+      const remote = await jsonbinRead(cfg.apiKey, binId);
+      if (remote && Array.isArray(remote.assignments) && (remote.updatedAt || 0) > (state.updatedAt || 0)) {
+        state = remote;
+        if (!state.settings) state.settings = {};
+        if (typeof state.settings.urlaubstage !== 'number') state.settings.urlaubstage = 30;
+        if (typeof state.settings.sollWochenstunden !== 'number') state.settings.sollWochenstunden = 40;
+        await storageSet(LOCAL_KEY, JSON.stringify(state));
+      } else {
+        await jsonbinUpdate(cfg.apiKey, binId, state);
+      }
+    }
+    cfg.lastSyncedAt = Date.now();
+    setSyncConfig(cfg);
+    ui.syncStatus = 'ok';
+  } catch (e) {
+    ui.syncStatus = 'error';
+    ui.syncError = (e && e.message) ? e.message : 'Unbekannter Fehler beim Sync.';
+    showError('Sync fehlgeschlagen', ui.syncError);
+  }
+  render();
+  clearTimeout(doSync._resetTimeout);
+  doSync._resetTimeout = setTimeout(() => { if (ui.syncStatus !== 'error') { ui.syncStatus = 'idle'; render(); } }, 4000);
+}
+
+async function backgroundPullOnLoad() {
+  const cfg = getSyncConfig();
+  if (!cfg || !cfg.binId) return;
+  try {
+    const remote = await jsonbinRead(cfg.apiKey, cfg.binId);
+    if (remote && Array.isArray(remote.assignments) && (remote.updatedAt || 0) > (state.updatedAt || 0)) {
+      state = remote;
+      if (!state.settings) state.settings = {};
+      if (typeof state.settings.urlaubstage !== 'number') state.settings.urlaubstage = 30;
+      if (typeof state.settings.sollWochenstunden !== 'number') state.settings.sollWochenstunden = 40;
+      await storageSet(LOCAL_KEY, JSON.stringify(state));
+      cfg.lastSyncedAt = Date.now();
+      setSyncConfig(cfg);
+      render();
+    }
+  } catch (e) {
+    // Offline oder Fehler beim automatischen Abgleich - lokale Daten bleiben unverändert, kein Popup (still im Hintergrund)
+  }
+}
+
+/* ----------------------- persistence: Migration & Init ----------------------- */
+
+async function tryMigrateOldClaudeData() {
+  // Die allererste Version dieser App lief ausschließlich über Claudes Artifact-Speicher
+  // unter einem anderen Schlüssel. Nur relevant, wenn wir gerade in diesem Modus laufen.
+  if (storageBackend !== 'claude') return;
+  try {
+    const res = await window.storage.get(OLD_CLAUDE_STORAGE_KEY, false);
+    if (res && res.value) {
+      const parsed = JSON.parse(res.value);
+      if (parsed && Array.isArray(parsed.assignments)) {
+        state = parsed;
+        state.updatedAt = Date.now();
+        await storageSet(LOCAL_KEY, JSON.stringify(state));
+      }
+    }
+  } catch (e) { /* keine alten Daten vorhanden - ignorieren */ }
+}
+
+async function init() {
+  storageBackend = await detectStorageBackend();
+  try {
+    const raw = await storageGet(LOCAL_KEY);
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.assignments)) {
+          state = parsed;
+        } else {
+          throw new Error('Unerwartetes Datenformat');
+        }
+      } catch (parseErr) {
+        queueError('Gespeicherte Daten beschädigt',
+          'Die gespeicherten Daten konnten nicht gelesen werden und wurden nicht geladen. Es wird mit einem leeren Stand gestartet. Falls du eine Sicherungsdatei hast, importiere sie unten über "Sicherung importieren".');
+      }
+    } else {
+      await tryMigrateOldClaudeData();
+    }
+  } catch (e) {
+    queueError('Daten konnten nicht geladen werden', 'Beim Laden ist ein unerwarteter Fehler aufgetreten. Es wird mit einem leeren Stand gestartet.');
+  }
+  if (!state.settings) state.settings = {};
+  if (typeof state.settings.urlaubstage !== 'number') state.settings.urlaubstage = 30;
+  if (typeof state.settings.sollWochenstunden !== 'number') state.settings.sollWochenstunden = 40;
+  if (!Array.isArray(state.abwesenheiten)) state.abwesenheiten = [];
+  loaded = true;
+  if (storageBackend === 'memory') {
+    queueError('Kein dauerhafter Speicher verfügbar',
+      'Weder Claude-Speicher noch der Browser-Speicher sind hier verfügbar. Eingaben bleiben nur für diese Sitzung erhalten und gehen beim Schließen verloren. Bitte am Ende "Sicherung exportieren" nutzen, um nichts zu verlieren.');
+  }
+  // Beide Hintergrund-Ladevorgänge VOR dem ersten Render abschließen, statt sie im Hintergrund
+  // nachzuziehen - sonst könnte ein verspäteter Render mitten in eine bereits begonnene
+  // Formular-Eingabe hineinplatzen und sie zurücksetzen.
+  await loadLaenderSaetze();
+  await backgroundPullOnLoad();
+  render();
+}
+
+/* ----------------------- CSV export ----------------------- */
+
+function assignmentToRows(a) {
+  return (a.tage || []).slice().sort((x, y) => (x.datum || '').localeCompare(y.datum || '')).map(d => ({
+    Ort: a.ort || '',
+    Kunde: a.kunde || '',
+    Land: a.land || '',
+    Datum: fmtDateDE(d.datum),
+    ReiseStart: d.reiseStart || '',
+    ReiseEnde: d.reiseEnde || '',
+    Reisezeit_h: numDE(dayReise(d)),
+    ArbeitStart: d.arbeitStart || '',
+    ArbeitEnde: d.arbeitEnde || '',
+    Arbeitszeit_h: numDE(dayArbeit(d)),
+    Spesen_EUR: numDE(Number(d.spesen) || 0),
+    Notiz: d.notiz || ''
+  }));
+}
+
+function toCSV(rows) {
+  if (rows.length === 0) return '';
+  const headers = Object.keys(rows[0]);
+  const escCsv = (v) => {
+    let s = String(v === undefined || v === null ? '' : v);
+    if (/[;"\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  };
+  const lines = [headers.join(';')];
+  rows.forEach(r => lines.push(headers.map(h => escCsv(r[h])).join(';')));
+  return lines.join('\r\n');
+}
+
+function downloadCSV(filename, csvContent) {
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportAllCSV() {
+  const rows = state.assignments
+    .slice().sort((a, b) => (a.start || '').localeCompare(b.start || ''))
+    .flatMap(a => assignmentToRows(a));
+  if (rows.length === 0) { showError('Keine Daten zum Exportieren', 'Es gibt noch keine Tage zum Exportieren.'); return; }
+  downloadCSV(`dienstreise-stunden-gesamt-${todayISO()}.csv`, toCSV(rows));
+}
+
+function exportAssignmentCSV(id) {
+  const a = state.assignments.find(x => x.id === id);
+  if (!a) return;
+  const rows = assignmentToRows(a);
+  if (rows.length === 0) { showError('Keine Daten für diese Dienstreise', 'Für diese Dienstreise sind noch keine Tage erfasst.'); return; }
+  const safeName = (a.land || 'dienstreise').toString().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  downloadCSV(`dienstreise-stunden-${safeName}-${a.start || ''}.csv`, toCSV(rows));
+}
+
+/* ----------------------- JSON Backup (Export/Import) ----------------------- */
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `dienstreise-stundenzettel-backup-${todayISO()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function importJSONFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(String(reader.result));
+      if (!parsed || !Array.isArray(parsed.assignments)) {
+        showError('Ungültige Sicherungsdatei', 'Diese Datei sieht nicht nach einer gültigen Sicherung aus (erwartet wird eine JSON-Datei mit "assignments").');
+        return;
+      }
+      if (!confirm(`Sicherung importieren? ${parsed.assignments.length} Dienstreise(n) werden geladen und der aktuelle lokale Stand wird überschrieben.`)) return;
+      state = parsed;
+      if (!state.settings) state.settings = {};
+      if (typeof state.settings.urlaubstage !== 'number') state.settings.urlaubstage = 30;
+      if (typeof state.settings.sollWochenstunden !== 'number') state.settings.sollWochenstunden = 40;
+      if (!Array.isArray(state.abwesenheiten)) state.abwesenheiten = [];
+      persist();
+      render();
+    } catch (e) {
+      showError('Datei konnte nicht gelesen werden', `Ist es eine gültige JSON-Sicherungsdatei? (${e && e.message ? e.message : 'Unbekannter Lesefehler'})`);
+    }
+  };
+  reader.onerror = () => {
+    showError('Datei konnte nicht gelesen werden', 'Die Datei konnte nicht vom Gerät geladen werden.');
+  };
+  reader.readAsText(file);
+}
+
+/* ----------------------- print ----------------------- */
+
+function printAll() {
+  ui.expanded = new Set(state.assignments.map(a => a.id));
+  ui.showAddAssignment = false;
+  ui.editingAssignmentId = null;
+  ui.addingDayFor = null;
+  ui.editingDayId = null;
+  render();
+  setTimeout(() => window.print(), 60);
+}
+
+function printSingleAssignment(id) {
+  const a = state.assignments.find(x => x.id === id);
+  if (!a) return;
+  ui.printSingleId = id;
+  render();
+  document.body.classList.add('print-single-mode');
+  setTimeout(() => window.print(), 60);
+}
+
+window.addEventListener('afterprint', () => {
+  if (document.body.classList.contains('print-single-mode')) {
+    document.body.classList.remove('print-single-mode');
+    ui.printSingleId = null;
+    render();
+  }
+});
+
+/* ----------------------- reset ----------------------- */
+
+function resetAll() {
+  if (!confirm('Wirklich ALLE Dienstreisen und Zeiteinträge unwiderruflich löschen?')) return;
+  if (!confirm('Letzte Sicherheitsabfrage: Wirklich alles löschen? Das kann nicht rückgängig gemacht werden.')) return;
+  state = { assignments: [], abwesenheiten: [], updatedAt: 0, settings: { urlaubstage: 30, sollWochenstunden: 40 } };
+  ui = {
+    expanded: new Set(), showAddAssignment: false, editingAssignmentId: null, addingDayFor: null,
+    editingDayId: null, lastDate: null, localSaveError: false, errorPopup: null, showAllWeeks: false,
+    showSyncSettings: false, syncStatus: 'idle', syncError: null,
+    calendarMonth: null, selectedCalDay: null, showAddAbwesenheit: false, editingAbwesenheitId: null, printSingleId: null
+  };
+  persist();
+  render();
+}
+
+/* ----------------------- render: pieces ----------------------- */
+
+function renderTopbar() {
+  const g = grandTotals();
+  const currentYear = Number(todayISO().slice(0, 4));
+  const cy = yearStats(currentYear);
+  return `
+    <header class="topbar">
+      <div class="topbar-main">
+        <div class="eyebrow">Reise- &amp; Arbeitszeit</div>
+        <h1>Dienstreise-Stundenzettel</h1>
+      </div>
+      <div class="stats-row">
+        <div class="stat"><span class="stat-value mono">${g.einsaetze}</span><span class="stat-label">Einsätze gesamt</span></div>
+        <div class="stat"><span class="stat-value mono">${cy.tageUnterwegs}/${cy.maxTage}</span><span class="stat-label">Arbeitstage ${currentYear}</span></div>
+        <div class="stat"><span class="stat-value mono">${fmtEuro(g.spesen)}</span><span class="stat-label">Spesen gesamt</span></div>
+      </div>
+    </header>`;
+}
+
+function renderTimeline() {
+  const list = sortedAsc();
+  if (list.length === 0) return '';
+  const today = todayISO();
+  const withRange = list.map(a => {
+    const end = a.ende || (a.start <= today ? today : a.start);
+    const dur = Math.max(daysBetweenInclusive(a.start, end), 1);
+    return { a, end, dur };
+  });
+  const minStart = withRange[0].a.start;
+  const maxEnd = withRange.reduce((m, r) => (r.end > m ? r.end : m), withRange[0].end);
+
+  const segments = withRange.map((r, i) => {
+    const grow = Math.max(r.dur, 1.2);
+    const cls = i % 2 === 0 ? 'seg-a' : 'seg-b';
+    const label = placeLabel(r.a);
+    const title = `${esc(label)}: ${fmtDateDE(r.a.start)} – ${r.a.ende ? fmtDateDE(r.a.ende) : 'laufend'} (${r.dur} Tage)`;
+    return `<div class="tl-seg ${cls}" style="flex-grow:${grow}" title="${title}">
+        <span class="tl-seg-label">${esc(label)}</span>
+      </div>`;
+  }).join('');
+
+  return `
+    <section class="timeline-overview">
+      <div class="timeline-bar">${segments}</div>
+      <div class="timeline-range mono">
+        <span>${fmtDateDE(minStart)}</span>
+        <span>${maxEnd === today && !withRange[withRange.length - 1].a.ende ? 'heute' : fmtDateDE(maxEnd)}</span>
+      </div>
+    </section>`;
+}
+
+function renderYearSummary() {
+  const years = yearsTouched();
+  if (years.length === 0) return '';
+  const urlaub = getUrlaubstage();
+  const cards = years.map(y => {
+    const s = yearStats(y);
+    const pct = s.maxTage > 0 ? Math.min(Math.round((s.tageUnterwegs / s.maxTage) * 100), 100) : 0;
+    const barClass = pct >= 90 ? 'year-bar-fill year-bar-fill-hot' : 'year-bar-fill';
+    return `
+      <div class="year-card">
+        <div class="year-card-year mono">${y}</div>
+        <div class="year-card-row"><span class="year-card-label">Einsätze</span><span class="year-card-value mono">${s.einsaetze}</span></div>
+        <div class="year-bar-track"><div class="${barClass}" style="width:${pct}%"></div></div>
+        <div class="year-card-ratio mono">${s.tageUnterwegs} von ${s.maxTage} Arbeitstagen unterwegs (${pct}%)</div>
+        <div class="year-card-footer">Arbeitszeit ${fmtHours(s.arbeitH)} · Reisezeit ${fmtHours(s.reiseH)}${s.spesen > 0 ? ` · Spesen ${fmtEuro(s.spesen)}` : ''}</div>
+      </div>`;
+  }).join('');
+  return `
+    <section class="year-summary">
+      <div class="year-summary-header">
+        <h2>Jahresübersicht</h2>
+        <label class="year-settings no-print">Urlaubstage/Jahr
+          <input type="number" min="0" max="365" value="${urlaub}" data-action="update-urlaubstage">
+        </label>
+      </div>
+      <div class="year-card-list">${cards}</div>
+      <p class="year-summary-hint no-print">Max. Arbeitstage = 5 × 4 × 12 (240) abzüglich bundesweiter Feiertage (nur Wochentage) und Urlaubstage. Grobe Orientierung, keine exakte Lohnbuchhaltung.</p>
+    </section>`;
+}
+
+function renderWeekSummary() {
+  const weeks = weeklyStats();
+  if (weeks.length === 0) return '';
+  const soll = getSollWochenstunden();
+  const visible = ui.showAllWeeks ? weeks : weeks.slice(0, 10);
+  const rows = visible.map(w => {
+    const diff = Math.round((w.arbeitH - soll) * 100) / 100;
+    const diffClass = diff >= 0 ? 'week-diff-pos' : 'week-diff-neg';
+    const diffText = (diff >= 0 ? '+' : '−') + fmtHours(Math.abs(diff));
+    return `
+      <div class="week-row">
+        <div class="mono">KW ${w.kw}</div>
+        <div class="mono week-range">${fmtDateDE(w.monday)} – ${fmtDateDE(w.sonntag)}</div>
+        <div class="mono">${fmtHours(w.arbeitH)}</div>
+        <div class="mono week-soll">${fmtHours(soll)}</div>
+        <div class="mono ${diffClass}">${diffText}</div>
+      </div>`;
+  }).join('');
+  return `
+    <section class="week-summary">
+      <div class="year-summary-header">
+        <h2>Wochenübersicht</h2>
+        <label class="year-settings no-print">Soll-Std./Woche
+          <input type="number" min="0" max="168" value="${soll}" data-action="update-sollwochenstunden">
+        </label>
+      </div>
+      <div class="week-table">
+        <div class="week-row week-row-header">
+          <div>KW</div><div>Zeitraum</div><div>Ist</div><div>Soll</div><div>Differenz</div>
+        </div>
+        ${rows}
+      </div>
+      ${weeks.length > 10 ? `<button type="button" class="link-btn no-print" data-action="toggle-all-weeks">${ui.showAllWeeks ? 'Weniger anzeigen' : `Alle ${weeks.length} Wochen anzeigen`}</button>` : ''}
+      <p class="year-summary-hint no-print">Ist-Stunden = reine Arbeitszeit (nach Pausenabzug), ohne Reisezeit. Woche = Montag bis Sonntag.</p>
+    </section>`;
+}
+
+/* ----------------------- Kalender-Rendering ----------------------- */
+
+const WEEKDAY_HEAD = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+const MONTH_NAMES = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+
+function renderCalDay(dateISO, yearMonth) {
+  const info = getDayInfo(dateISO);
+  const inMonth = dateISO.slice(0, 7) === yearMonth;
+  const isToday = dateISO === todayISO();
+  const dayNum = Number(dateISO.slice(8, 10));
+
+  const classes = ['cal-day'];
+  if (!inMonth) classes.push('cal-day-outside');
+  if (isToday) classes.push('cal-day-today');
+  if (ui.selectedCalDay === dateISO) classes.push('cal-day-selected');
+
+  // Priorität für Hintergrundfarbe: Abwesenheit > Dienstreise > Feiertag > Wochenende
+  let tone = '';
+  if (info.abwesenheit) tone = 'cal-tone-' + info.abwesenheit.typ;
+  else if (info.dienstreisen.length > 0) tone = 'cal-tone-dienstreise';
+  else if (info.holiday) tone = 'cal-tone-holiday';
+  else if (info.weekend) tone = 'cal-tone-weekend';
+  if (tone) classes.push(tone);
+
+  let title = fmtDateDE(dateISO);
+  if (info.holiday) title += ` – ${info.holiday}`;
+  if (info.dienstreisen.length) title += ` – ${info.dienstreisen.map(a => placeLabel(a)).join(', ')}`;
+  if (info.abwesenheit) title += ` – ${ABWESENHEIT_LABELS[info.abwesenheit.typ]}`;
+
+  return `<button type="button" class="${classes.join(' ')}" data-action="select-cal-day" data-id="${dateISO}" title="${esc(title)}">
+    <span class="cal-day-num">${dayNum}</span>
+  </button>`;
+}
+
+function renderCalendarGrid() {
+  const yearMonth = ui.calendarMonth || currentYearMonth();
+  const weeks = getMonthGrid(yearMonth);
+  const [y, m] = yearMonth.split('-').map(Number);
+
+  const headerRow = `<div class="cal-week-row cal-week-row-header">
+    <div class="cal-kw">KW</div>
+    ${WEEKDAY_HEAD.map(w => `<div>${w}</div>`).join('')}
+  </div>`;
+
+  const bodyRows = weeks.map(week => `
+    <div class="cal-week-row">
+      <div class="cal-kw mono">${getISOWeekNumber(week[0])}</div>
+      ${week.map(d => renderCalDay(d, yearMonth)).join('')}
+    </div>`).join('');
+
+  return `
+    <div class="calendar-header">
+      <button type="button" class="icon-btn" data-action="cal-prev" aria-label="Vorheriger Monat">‹</button>
+      <div class="calendar-month-label">${MONTH_NAMES[m - 1]} ${y}</div>
+      <button type="button" class="icon-btn" data-action="cal-next" aria-label="Nächster Monat">›</button>
+      <button type="button" class="link-btn no-print" data-action="cal-today">Heute</button>
+    </div>
+    <div class="calendar-legend no-print">
+      <span><i class="legend-dot cal-tone-dienstreise"></i>Dienstreise</span>
+      <span><i class="legend-dot cal-tone-holiday"></i>Feiertag</span>
+      <span><i class="legend-dot cal-tone-weekend"></i>Wochenende</span>
+      <span><i class="legend-dot cal-tone-urlaub"></i>Urlaub</span>
+      <span><i class="legend-dot cal-tone-krankheit"></i>Krankheit</span>
+      <span><i class="legend-dot cal-tone-sonderurlaub"></i>Sonderurlaub</span>
+    </div>
+    <div class="calendar-grid">${headerRow}${bodyRows}</div>`;
+}
+
+function renderAbwesenheitForm(existing, prefillDate) {
+  const typ = existing ? existing.typ : 'urlaub';
+  const start = existing ? existing.start : (prefillDate || todayISO());
+  const ende = existing ? (existing.ende || existing.start) : (prefillDate || todayISO());
+  const notiz = existing ? (existing.notiz || '') : '';
+  const formType = existing ? 'edit-abwesenheit' : 'add-abwesenheit';
+  const idAttr = existing ? `data-id="${existing.id}"` : '';
+  return `
+    <form class="panel form-panel no-print" data-form="${formType}" ${idAttr}>
+      <div class="panel-title">${existing ? 'Abwesenheit bearbeiten' : 'Abwesenheit eintragen'}</div>
+      <div class="form-grid">
+        <label class="field"><span class="field-label">Art *</span>
+          <select name="typ">
+            <option value="urlaub" ${typ === 'urlaub' ? 'selected' : ''}>Urlaub</option>
+            <option value="krankheit" ${typ === 'krankheit' ? 'selected' : ''}>Krankheit</option>
+            <option value="sonderurlaub" ${typ === 'sonderurlaub' ? 'selected' : ''}>Sonderurlaub</option>
+          </select>
+        </label>
+        <label class="field"><span class="field-label">Start *</span>
+          <input type="date" name="start" required value="${start}">
+        </label>
+        <label class="field"><span class="field-label">Ende *</span>
+          <input type="date" name="ende" required value="${ende}">
+        </label>
+        <label class="field field-wide"><span class="field-label">Notiz</span>
+          <input type="text" name="notiz" value="${esc(notiz)}" placeholder="optional, z.B. Anlass">
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <button type="button" class="btn btn-ghost" data-action="${existing ? 'cancel-edit-abwesenheit' : 'cancel-add-abwesenheit'}">Abbrechen</button>
+        ${existing ? `<button type="button" class="btn btn-ghost danger" data-action="delete-abwesenheit" data-id="${existing.id}">Löschen</button>` : ''}
+      </div>
+    </form>`;
+}
+
+function renderSelectedDayPanel() {
+  if (!ui.selectedCalDay) return '';
+  const dateISO = ui.selectedCalDay;
+  const info = getDayInfo(dateISO);
+  const wd = weekdayAbbr(dateISO);
+
+  if (ui.editingAbwesenheitId) {
+    const existing = (state.abwesenheiten || []).find(x => x.id === ui.editingAbwesenheitId);
+    if (existing) return renderAbwesenheitForm(existing, null);
+  }
+  if (ui.showAddAbwesenheit) {
+    return renderAbwesenheitForm(null, dateISO);
+  }
+
+  const lines = [];
+  if (info.holiday) lines.push(`<div class="daypanel-line">🎌 ${esc(info.holiday)}</div>`);
+  if (info.weekend) lines.push(`<div class="daypanel-line daypanel-muted">Wochenende</div>`);
+  info.dienstreisen.forEach(a => {
+    lines.push(`<div class="daypanel-line">🧳 Dienstreise: ${esc(placeLabel(a))}</div>`);
+  });
+  if (info.abwesenheit) {
+    lines.push(`<div class="daypanel-line">📌 ${ABWESENHEIT_LABELS[info.abwesenheit.typ]}${info.abwesenheit.notiz ? ' – ' + esc(info.abwesenheit.notiz) : ''}
+      <button type="button" class="link-btn" data-action="edit-abwesenheit" data-id="${info.abwesenheit.id}">bearbeiten</button></div>`);
+  }
+  if (lines.length === 0) lines.push('<div class="daypanel-line daypanel-muted">Nichts eingetragen.</div>');
+
+  return `
+    <div class="daypanel no-print">
+      <div class="daypanel-header">
+        <span class="mono"><b>${wd}</b> ${fmtDateDE(dateISO)}</span>
+        <button type="button" class="icon-btn" data-action="close-cal-day" aria-label="Schließen">✕</button>
+      </div>
+      ${lines.join('')}
+      ${!info.abwesenheit ? `<button type="button" class="btn btn-ghost btn-sm" data-action="show-add-abwesenheit">+ Urlaub/Krankheit/Sonderurlaub eintragen</button>` : ''}
+    </div>`;
+}
+
+function renderAbwesenheitenList() {
+  const list = (state.abwesenheiten || []).slice().sort((a, b) => (b.start || '').localeCompare(a.start || ''));
+  if (list.length === 0) return '';
+  return `
+    <div class="abwesenheiten-list no-print">
+      <div class="abwesenheiten-list-title">Eingetragene Abwesenheiten</div>
+      ${list.map(x => `
+        <div class="abwesenheit-row">
+          <span class="abwesenheit-typ-badge abwesenheit-typ-${x.typ}">${ABWESENHEIT_LABELS[x.typ]}</span>
+          <span class="mono">${fmtDateDE(x.start)}${x.ende && x.ende !== x.start ? ' – ' + fmtDateDE(x.ende) : ''}</span>
+          <span class="abwesenheit-notiz">${x.notiz ? esc(x.notiz) : ''}</span>
+          <button type="button" class="link-btn" data-action="edit-abwesenheit" data-id="${x.id}">bearbeiten</button>
+        </div>`).join('')}
+    </div>`;
+}
+
+function renderSingleAssignmentPrintSheet() {
+  if (!ui.printSingleId) return '';
+  const a = state.assignments.find(x => x.id === ui.printSingleId);
+  if (!a) return '';
+  const t = assignmentTotals(a);
+  const days = (a.tage || []).slice().sort((x, y) => (x.datum || '').localeCompare(y.datum || ''));
+  const name = (state.settings && state.settings.mitarbeiterName) || '';
+  const personalnr = (state.settings && state.settings.personalnummer) || '';
+
+  const rows = days.map(d => {
+    const hasReise = d.reiseStart && d.reiseEnde;
+    const hasArbeit = d.arbeitStart && d.arbeitEnde;
+    return `<tr>
+      <td>${weekdayAbbr(d.datum)} ${fmtDateDE(d.datum)}</td>
+      <td>${hasReise ? `${d.reiseStart}–${d.reiseEnde}` : '–'}</td>
+      <td class="num">${hasReise ? fmtHours(dayReise(d)) : '–'}</td>
+      <td>${hasArbeit ? `${d.arbeitStart}–${d.arbeitEnde}` : '–'}</td>
+      <td class="num">${hasArbeit ? fmtHours(dayArbeit(d)) : '–'}</td>
+      <td class="num">${Number(d.spesen) > 0 ? fmtEuro(Number(d.spesen)) : '–'}</td>
+      <td>${d.notiz ? esc(d.notiz) : ''}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <div class="single-print-sheet">
+      <div class="print-doc-header">
+        <h1>Reise- und Arbeitszeitnachweis</h1>
+        <div class="print-meta-grid">
+          <div><span class="print-label">Mitarbeiter</span>${name ? esc(name) : '<span class="print-blank"></span>'}</div>
+          <div><span class="print-label">Personalnummer</span>${personalnr ? esc(personalnr) : '<span class="print-blank"></span>'}</div>
+          <div><span class="print-label">Kunde</span>${a.kunde ? esc(a.kunde) : '–'}</div>
+          <div><span class="print-label">Ort / Land</span>${esc(placeLabel(a))}</div>
+          <div><span class="print-label">Zeitraum</span>${fmtDateDE(a.start)} – ${a.ende ? fmtDateDE(a.ende) : 'laufend'}</div>
+          <div><span class="print-label">Erstellt am</span>${fmtDateDE(todayISO())}</div>
+          ${a.tagessatz > 0 ? `<div><span class="print-label">Verpflegungspauschale/Tag</span>${fmtEuro(a.tagessatz)}</div>` : ''}
+          ${a.uebernachtungspauschale > 0 ? `<div><span class="print-label">Übernachtungspauschale</span>${fmtEuro(a.uebernachtungspauschale)}</div>` : ''}
+        </div>
+        ${a.notiz ? `<div class="print-notiz">${esc(a.notiz)}</div>` : ''}
+      </div>
+      <table class="print-table">
+        <thead>
+          <tr><th>Datum</th><th>Reise</th><th>Std.</th><th>Arbeit</th><th>Std.</th><th>Spesen</th><th>Notiz</th></tr>
+        </thead>
+        <tbody>${rows || '<tr><td colspan="7">Keine Tage erfasst.</td></tr>'}</tbody>
+        <tfoot>
+          <tr>
+            <td><b>Gesamt (${days.length} Tage)</b></td>
+            <td></td><td class="num"><b>${fmtHours(t.reise)}</b></td>
+            <td></td><td class="num"><b>${fmtHours(t.arbeit)}</b></td>
+            <td class="num"><b>${fmtEuro(t.spesen)}</b></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+      <div class="print-signatures">
+        <div class="sig-block"><div class="sig-line"></div><span>Datum, Unterschrift Mitarbeiter/in</span></div>
+        <div class="sig-block"><div class="sig-line"></div><span>Datum, Unterschrift Vorgesetzte/r</span></div>
+      </div>
+    </div>`;
+}
+
+function renderCalendarSection() {
+  return `
+    <section class="calendar-section">
+      <h2>Kalender</h2>
+      ${renderCalendarGrid()}
+      ${renderSelectedDayPanel()}
+      ${renderAbwesenheitenList()}
+    </section>`;
+}
+
+function fmtDateTimeDE(ts) {
+  if (!ts) return null;
+  const d = new Date(ts);
+  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}. ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function renderSyncBar() {
+  const cfg = getSyncConfig();
+  const pending = hasPendingChanges();
+  const running = ui.syncStatus === 'running';
+
+  let btnLabel = 'Cloud-Sync einrichten';
+  let btnClass = 'btn btn-ghost';
+  if (cfg) {
+    btnLabel = running ? 'Synchronisiere …' : '⟳ Sync';
+    btnClass = pending ? 'btn btn-primary sync-pending' : 'btn btn-ghost';
+  }
+
+  let statusText = '';
+  if (!cfg) {
+    statusText = 'Noch kein Cloud-Sync eingerichtet – Daten bleiben lokal auf diesem Gerät.';
+  } else if (running) {
+    statusText = 'Synchronisiere …';
+  } else if (pending) {
+    statusText = 'Ungesicherte Änderungen – jetzt synchronisieren';
+  } else if (ui.syncStatus === 'error') {
+    statusText = `Sync fehlgeschlagen: ${esc(ui.syncError || '')}`;
+  } else if (ui.syncStatus === 'ok') {
+    statusText = 'Synchronisiert ✓';
+  } else if (cfg.lastSyncedAt) {
+    statusText = `Zuletzt synchronisiert: ${fmtDateTimeDE(cfg.lastSyncedAt)}`;
+  } else {
+    statusText = 'Verbunden – noch nicht synchronisiert';
+  }
+
+  return `
+    <div class="sync-bar no-print">
+      <button class="${btnClass} btn-sm" data-action="do-sync" ${running ? 'disabled' : ''}>${btnLabel}</button>
+      <span class="sync-status-text ${ui.syncStatus === 'error' ? 'err' : ''}">${statusText}</span>
+      <div class="toolbar-spacer"></div>
+      ${cfg ? `<button class="link-btn" data-action="toggle-sync-settings">Verbindung</button>` : ''}
+    </div>
+    ${renderSyncSettingsPanel(cfg)}`;
+}
+
+function renderSyncSettingsPanel(cfg) {
+  if (!ui.showSyncSettings) return '';
+  return `
+    <form class="panel form-panel no-print" data-form="sync-settings">
+      <div class="panel-title">Cloud-Sync einrichten</div>
+      <p class="panel-hint">
+        Kostenloses eigenes Konto auf <span class="mono">jsonbin.io</span> anlegen, den "X-Master-Key" aus dem
+        Dashboard hier eintragen. Auf einem zweiten Gerät/Browser denselben Master-Key <b>und</b> dieselbe Bin-ID
+        eintragen, damit beide auf denselben Datensatz zugreifen. Dein Konto, deine Daten – niemand sonst hat Zugriff.
+      </p>
+      <div class="form-grid">
+        <label class="field field-wide"><span class="field-label">Master-Key (jsonbin.io) *</span>
+          <input type="text" name="apiKey" placeholder="z.B. $2a$10$..." required value="${esc(cfg ? cfg.apiKey : '')}" autocomplete="off">
+        </label>
+        <label class="field field-wide"><span class="field-label">Bin-ID (leer lassen beim allerersten Gerät)</span>
+          <input type="text" name="binId" placeholder="wird beim ersten Sync automatisch erzeugt" value="${esc(cfg && cfg.binId ? cfg.binId : '')}" autocomplete="off">
+        </label>
+      </div>
+      ${cfg && cfg.binId ? `<p class="panel-hint">Diese Bin-ID auf dem anderen Gerät eintragen: <span class="mono bin-id-display">${esc(cfg.binId)}</span></p>` : ''}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <button type="button" class="btn btn-ghost" data-action="cancel-sync-settings">Abbrechen</button>
+        ${cfg ? `<button type="button" class="btn btn-ghost danger" data-action="remove-sync-settings">Verbindung entfernen</button>` : ''}
+      </div>
+    </form>`;
+}
+
+function renderToolbar() {
+  return `
+    <div class="toolbar no-print">
+      <button class="btn btn-primary" data-action="show-add-assignment">+ Neue Dienstreise</button>
+      <div class="toolbar-spacer"></div>
+      <button class="btn btn-ghost" data-action="export-csv-all">CSV exportieren</button>
+      <button class="btn btn-ghost" data-action="print-all">Drucken</button>
+    </div>`;
+}
+
+function renderAddAssignmentForm() {
+  if (!ui.showAddAssignment) return '';
+  return `
+    <form class="panel form-panel no-print" data-form="add-assignment">
+      <div class="panel-title">Neue Dienstreise anlegen</div>
+      <div class="form-grid">
+        <label class="field"><span class="field-label">Land *</span>
+          ${comboFieldHTML('land', '', 'Land wählen oder tippen', 'land', true)}
+        </label>
+        <label class="field"><span class="field-label">Ort</span>
+          ${comboFieldHTML('ort', '', 'z.B. Barcelona', 'ort', false)}
+        </label>
+        <label class="field"><span class="field-label">Kunde</span>
+          <input type="text" name="kunde" placeholder="z.B. Musterpharma GmbH" list="kunde-list-add" autocomplete="off">
+        </label>
+        <label class="field"><span class="field-label">Start *</span>
+          <input type="date" name="start" required value="${todayISO()}">
+        </label>
+        <label class="field"><span class="field-label">Ende (optional)</span>
+          <input type="date" name="ende">
+        </label>
+        <label class="field"><span class="field-label">Verpflegungspauschale/Tag (€)</span>
+          <input type="number" step="0.01" min="0" name="tagessatz" placeholder="z.B. 45,00">
+        </label>
+        <label class="field"><span class="field-label">Übernachtungspauschale (€)</span>
+          <input type="number" step="0.01" min="0" name="uebernachtungspauschale" placeholder="z.B. 130,00">
+        </label>
+        <label class="field field-wide"><span class="field-label">Notiz</span>
+          <input type="text" name="notiz" placeholder="z.B. Inbetriebnahme Linie 3">
+        </label>
+      </div>
+      <p class="panel-hint">Aktuellen Auslandstagegeld-Satz für das jeweilige Land findest du auf bundesfinanzministerium.de. Wird für die automatische Verpflegungs-Berechnung pro Tag genutzt (leer lassen für manuelle Eingabe).</p>
+      ${renderKundeDatalist('add')}
+      <div class="autoday-block">
+        <div class="autoday-title">📆 Tage automatisch anlegen (mit Ende-Datum)</div>
+        <div class="form-grid">
+          <label class="field"><span class="field-label">Arbeit Start</span>${timeSelectHTML('arbeitStart', '08:00')}</label>
+          <label class="field"><span class="field-label">Arbeit Ende</span>${timeSelectHTML('arbeitEnde', '17:00')}</label>
+        </div>
+        <button type="button" class="link-btn autoday-clear-times" data-action="clear-autoday-times">Zeiten noch unbekannt – als freie Tage anlegen (vor Reiseantritt)</button>
+        <div class="bulk-weekdays-wrap">
+          <span class="field-label">Arbeitstage</span>
+          <div class="bulk-weekdays">
+            <label><input type="checkbox" name="wd_mo" checked> Mo</label>
+            <label><input type="checkbox" name="wd_di" checked> Di</label>
+            <label><input type="checkbox" name="wd_mi" checked> Mi</label>
+            <label><input type="checkbox" name="wd_do" checked> Do</label>
+            <label><input type="checkbox" name="wd_fr" checked> Fr</label>
+            <label><input type="checkbox" name="wd_sa"> Sa</label>
+            <label><input type="checkbox" name="wd_so"> So</label>
+          </div>
+        </div>
+        <p class="autoday-hint">Verpflegungspauschale wird für <b>jeden</b> Tag im Zeitraum berechnet (auch an nicht angehakten Tagen). Arbeitszeit nur an den angehakten Wochentagen – oder lass die Zeiten leer, um alle Tage zunächst als "Freie Tage" anzulegen und später einzeln zu ergänzen. Reisezeit für den An-/Abreisetag danach direkt am jeweiligen Tag ergänzen.</p>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Anlegen</button>
+        <button type="button" class="btn btn-ghost" data-action="cancel-add-assignment">Abbrechen</button>
+      </div>
+    </form>`;
+}
+
+function renderEditAssignmentForm(a) {
+  return `
+    <form class="panel form-panel no-print" data-form="edit-assignment" data-id="${a.id}">
+      <div class="panel-title">Dienstreise bearbeiten</div>
+      <div class="form-grid">
+        <label class="field"><span class="field-label">Land *</span>
+          ${comboFieldHTML('land', a.land, 'Land wählen oder tippen', 'land', true)}
+        </label>
+        <label class="field"><span class="field-label">Ort</span>
+          ${comboFieldHTML('ort', a.ort, 'z.B. Barcelona', 'ort', false)}
+        </label>
+        <label class="field"><span class="field-label">Kunde</span>
+          <input type="text" name="kunde" value="${esc(a.kunde || '')}" list="kunde-list-edit-${a.id}" autocomplete="off">
+        </label>
+        <label class="field"><span class="field-label">Start *</span>
+          <input type="date" name="start" required value="${a.start || ''}">
+        </label>
+        <label class="field"><span class="field-label">Ende (optional)</span>
+          <input type="date" name="ende" value="${a.ende || ''}">
+        </label>
+        <label class="field"><span class="field-label">Verpflegungspauschale/Tag (€)</span>
+          <input type="number" step="0.01" min="0" name="tagessatz" value="${a.tagessatz || ''}" placeholder="z.B. 45,00">
+        </label>
+        <label class="field"><span class="field-label">Übernachtungspauschale (€)</span>
+          <input type="number" step="0.01" min="0" name="uebernachtungspauschale" value="${a.uebernachtungspauschale || ''}" placeholder="z.B. 130,00">
+        </label>
+        <label class="field field-wide"><span class="field-label">Notiz</span>
+          <input type="text" name="notiz" value="${esc(a.notiz || '')}">
+        </label>
+      </div>
+      <p class="panel-hint">Aktuellen Auslandstagegeld-Satz findest du auf bundesfinanzministerium.de.</p>
+      ${renderKundeDatalist('edit-' + a.id)}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <button type="button" class="btn btn-ghost" data-action="cancel-edit-assignment">Abbrechen</button>
+      </div>
+    </form>`;
+}
+
+function renderDayRow(a, d) {
+  if (ui.editingDayId === d.id) return renderDayEditForm(a, d);
+  const reiseH = dayReise(d);
+  const arbeitH = dayArbeit(d);
+  const hasReise = d.reiseStart && d.reiseEnde;
+  const hasArbeit = d.arbeitStart && d.arbeitEnde;
+  const wd = weekdayAbbr(d.datum);
+  const weekend = isWeekendISO(d.datum);
+  const holidayName = isGermanAssignment(a) ? germanHolidayName(d.datum) : null;
+  const rowClasses = ['day-row'];
+  if (holidayName) rowClasses.push('day-row-holiday');
+  else if (weekend) rowClasses.push('day-row-weekend');
+  return `
+    <div class="${rowClasses.join(' ')}">
+      <div class="d-field"><span class="field-label">Datum</span>
+        <span class="mono d-datum"><b class="d-weekday">${wd}</b> ${fmtDateDE(d.datum)}</span>
+        ${holidayName ? `<span class="holiday-badge" title="${esc(holidayName)}">Feiertag</span>` : ''}
+      </div>
+      <div class="d-field"><span class="field-label">Reise</span>
+        ${hasReise
+          ? `<span class="mono">${d.reiseStart}–${d.reiseEnde}</span><span class="d-hours travel-color mono">${fmtHours(reiseH)}</span>`
+          : '<span class="d-empty">–</span>'}
+      </div>
+      <div class="d-field"><span class="field-label">Arbeit</span>
+        ${hasArbeit
+          ? `<span class="mono">${d.arbeitStart}–${d.arbeitEnde}</span><span class="d-hours work-color mono">${fmtHours(arbeitH)}</span>${dayArbeitPauseMin(d) > 0 ? `<span class="d-pause-note">− ${dayArbeitPauseMin(d)} Min. Pause</span>` : ''}`
+          : ((d.frei || (!d.reiseStart && !d.reiseEnde)) ? '<span class="frei-tag-label">🏖️ Freier Tag</span>' : '<span class="d-empty">–</span>')}
+      </div>
+      <div class="d-field"><span class="field-label">Spesen</span>
+        ${Number(d.spesen) > 0 ? `<span class="mono">${fmtEuro(Number(d.spesen))}</span>` : '<span class="d-empty">–</span>'}
+        ${(d.fruehstueck || d.mittag || d.abend) ? `<span class="meal-icons" title="${[d.fruehstueck && 'Frühstück', d.mittag && 'Mittagessen', d.abend && 'Abendessen'].filter(Boolean).join(', ')} gestellt">${d.fruehstueck ? '🥐' : ''}${d.mittag ? '🍽️' : ''}${d.abend ? '🌙' : ''}</span>` : ''}
+      </div>
+      <div class="d-field d-field-notiz"><span class="field-label">Notiz</span>
+        <span class="d-notiz" title="${esc(d.notiz || '')}">${d.notiz ? esc(d.notiz) : '<span class="d-empty">–</span>'}</span>
+      </div>
+      <div class="d-actions no-print">
+        <button class="icon-btn" data-action="edit-day" data-id="${d.id}" data-parent="${a.id}" aria-label="Tag bearbeiten" title="Bearbeiten">✎</button>
+        <button class="icon-btn danger" data-action="delete-day" data-id="${d.id}" data-parent="${a.id}" aria-label="Tag löschen" title="Löschen">🗑</button>
+      </div>
+    </div>`;
+}
+
+function renderVerpflegungBlock(a, existingDay, dateISO, existingSpesen) {
+  const hasTagessatz = a.tagessatz > 0;
+  const edge = isEdgeDay(a, dateISO);
+  const suggestion = (hasTagessatz && !(existingSpesen && Number(existingSpesen) > 0))
+    ? verpflegungBetrag(a.tagessatz, edge, false, false, false)
+    : null;
+  const fr = !!(existingDay && existingDay.fruehstueck);
+  const mi = !!(existingDay && existingDay.mittag);
+  const ab = !!(existingDay && existingDay.abend);
+  const label = hasTagessatz
+    ? `🍽️ Verpflegung (${esc(a.land)}, ${fmtEuro(a.tagessatz)}/Tag, ${edge ? 'An-/Abreisetag = ⅔' : 'voller Tag'})`
+    : '🍽️ Mahlzeiten an diesem Tag (für die eigene Übersicht)';
+  return {
+    html: `
+      <div class="verpflegung-calc field-wide">
+        <div class="verpflegung-calc-label">${label}</div>
+        <div class="verpflegung-checks">
+          <label><input type="checkbox" class="verpflegung-check" name="mahlzeit_fruehstueck" ${fr ? 'checked' : ''}> Frühstück gestellt</label>
+          <label><input type="checkbox" class="verpflegung-check" name="mahlzeit_mittag" ${mi ? 'checked' : ''}> Mittagessen gestellt</label>
+          <label><input type="checkbox" class="verpflegung-check" name="mahlzeit_abend" ${ab ? 'checked' : ''}> Abendessen gestellt</label>
+        </div>
+      </div>`,
+    suggestion
+  };
+}
+
+function renderDayEditForm(a, d) {
+  const reiseChecked = isEdgeDay(a, d.datum) || !!(d.reiseStart || d.reiseEnde);
+  const freiChecked = !!d.frei || (!d.arbeitStart && !d.arbeitEnde && !reiseChecked);
+  const vBlock = renderVerpflegungBlock(a, d, d.datum, d.spesen);
+  return `
+    <form class="day-row day-edit-form no-print" data-form="edit-day" data-id="${d.id}" data-parent="${a.id}">
+      <label class="field"><span class="field-label">Datum</span><input type="date" name="datum" required value="${d.datum || ''}"></label>
+      <div class="frei-toggle-wrap field-wide">
+        <input type="checkbox" id="frei-toggle-${d.id}" class="frei-toggle-checkbox" ${freiChecked ? 'checked' : ''}>
+        <label for="frei-toggle-${d.id}" class="frei-toggle-label">🏖️ Freier Tag (keine Arbeitszeit, nur Spesen)</label>
+      </div>
+      <div class="reise-toggle-wrap field-wide">
+        <input type="checkbox" id="reise-toggle-${d.id}" class="reise-toggle-checkbox" ${reiseChecked ? 'checked' : ''}>
+        <label for="reise-toggle-${d.id}" class="reise-toggle-label">🧳 Reisezeit (Anreise/Abreise) erfassen</label>
+        <div class="reise-fields-panel">
+          <label class="field"><span class="field-label">Reise Start</span>${timeSelectHTML('reiseStart', d.reiseStart)}</label>
+          <label class="field"><span class="field-label">Reise Ende</span>${timeSelectHTML('reiseEnde', d.reiseEnde)}</label>
+        </div>
+      </div>
+      <div class="arbeit-fields-wrap${freiChecked ? ' arbeit-fields-hidden' : ''}">
+        <label class="field"><span class="field-label">Arbeit Start</span>${timeSelectHTML('arbeitStart', d.arbeitStart)}</label>
+        <label class="field"><span class="field-label">Arbeit Ende</span>${timeSelectHTML('arbeitEnde', d.arbeitEnde)}</label>
+      </div>
+      <label class="field"><span class="field-label">Spesen (€)</span><input type="number" step="0.01" min="0" name="spesen" value="${d.spesen || ''}"></label>
+      ${vBlock ? vBlock.html : ''}
+      <label class="field field-wide"><span class="field-label">Notiz</span><input type="text" name="notiz" value="${esc(d.notiz || '')}"></label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-sm">Speichern</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-action="cancel-edit-day">Abbrechen</button>
+      </div>
+    </form>`;
+}
+
+function renderAddDayForm(a) {
+  if (ui.addingDayFor !== a.id) return '';
+  const defaultDate = ui.lastDate && ui.lastDate.parent === a.id ? ui.lastDate.value : (a.start || todayISO());
+  const reiseChecked = isEdgeDay(a, defaultDate);
+  const uid2 = 'new-' + a.id;
+  const vBlock = renderVerpflegungBlock(a, null, defaultDate, null);
+  const spesenValue = vBlock && vBlock.suggestion ? vBlock.suggestion : '';
+  return `
+    <form class="day-row day-edit-form no-print" data-form="add-day" data-parent="${a.id}">
+      <label class="field"><span class="field-label">Datum (bzw. "Von")</span><input type="date" name="datum" required value="${defaultDate}"></label>
+      <div class="frei-toggle-wrap field-wide">
+        <input type="checkbox" id="frei-toggle-${uid2}" class="frei-toggle-checkbox">
+        <label for="frei-toggle-${uid2}" class="frei-toggle-label">🏖️ Freier Tag (keine Arbeitszeit, nur Spesen)</label>
+      </div>
+      <div class="bulk-toggle-wrap field-wide">
+        <input type="checkbox" id="bulk-toggle-${uid2}" class="bulk-toggle-checkbox">
+        <label for="bulk-toggle-${uid2}" class="bulk-toggle-label">📅 Mehrere Tage auf einmal (gleiche Zeiten)</label>
+        <div class="bulk-fields-panel">
+          <label class="field"><span class="field-label">Bis</span><input type="date" name="bulkEnde"></label>
+          <div class="bulk-weekdays-wrap">
+            <span class="field-label">Arbeitstage (Arbeitszeit anlegen)</span>
+            <div class="bulk-weekdays">
+              <label><input type="checkbox" name="wd_mo" checked> Mo</label>
+              <label><input type="checkbox" name="wd_di" checked> Di</label>
+              <label><input type="checkbox" name="wd_mi" checked> Mi</label>
+              <label><input type="checkbox" name="wd_do" checked> Do</label>
+              <label><input type="checkbox" name="wd_fr" checked> Fr</label>
+              <label><input type="checkbox" name="wd_sa"> Sa</label>
+              <label><input type="checkbox" name="wd_so"> So</label>
+            </div>
+          </div>
+          <p class="bulk-hint">Verpflegungspauschale wird für <b>jeden</b> Tag im Zeitraum angelegt (auch an nicht angehakten Tagen) – Arbeitszeit nur an den angehakten Wochentagen. Reisezeit gilt nur für Einzeltage – An-/Abreisetag bitte separat erfassen.</p>
+        </div>
+      </div>
+      <div class="reise-toggle-wrap field-wide">
+        <input type="checkbox" id="reise-toggle-${uid2}" class="reise-toggle-checkbox" ${reiseChecked ? 'checked' : ''}>
+        <label for="reise-toggle-${uid2}" class="reise-toggle-label">🧳 Reisezeit (Anreise/Abreise) erfassen</label>
+        <div class="reise-fields-panel">
+          <label class="field"><span class="field-label">Reise Start</span>${timeSelectHTML('reiseStart', '')}</label>
+          <label class="field"><span class="field-label">Reise Ende</span>${timeSelectHTML('reiseEnde', '')}</label>
+        </div>
+      </div>
+      <div class="arbeit-fields-wrap">
+        <label class="field"><span class="field-label">Arbeit Start</span>${timeSelectHTML('arbeitStart', '')}</label>
+        <label class="field"><span class="field-label">Arbeit Ende</span>${timeSelectHTML('arbeitEnde', '')}</label>
+      </div>
+      <label class="field"><span class="field-label">Spesen (€)</span><input type="number" step="0.01" min="0" name="spesen" value="${spesenValue}"></label>
+      ${vBlock ? vBlock.html : ''}
+      <label class="field field-wide"><span class="field-label">Notiz</span><input type="text" name="notiz" placeholder="optional"></label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-sm">Tag(e) speichern</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-action="cancel-add-day">Fertig</button>
+      </div>
+    </form>`;
+}
+
+function renderAssignmentCard(a, seq) {
+  const isExpanded = ui.expanded.has(a.id);
+  const t = assignmentTotals(a);
+  const durLabel = a.ende
+    ? `${daysBetweenInclusive(a.start, a.ende)} Tage`
+    : `seit ${daysBetweenInclusive(a.start, todayISO())} Tagen · läuft`;
+
+  if (ui.editingAssignmentId === a.id) {
+    return `<div class="dienstreise-card" data-id="${a.id}">${renderEditAssignmentForm(a)}</div>`;
+  }
+
+  const body = isExpanded ? `
+    <div class="card-body">
+      ${a.notiz ? `<div class="assignment-note">${esc(a.notiz)}</div>` : ''}
+      ${(a.tagessatz > 0 || a.uebernachtungspauschale > 0) ? `
+      <div class="rate-info-bar">
+        ${a.tagessatz > 0 ? `<span>🍽️ Spesensatz: <b>${fmtEuro(a.tagessatz)}</b>/Tag</span>` : ''}
+        ${a.uebernachtungspauschale > 0 ? `<span>🛏️ Übernachtung: <b>${fmtEuro(a.uebernachtungspauschale)}</b></span>` : ''}
+      </div>` : ''}
+      <div class="day-row day-row-header">
+        <div class="d-field">Datum</div>
+        <div class="d-field">Reise</div>
+        <div class="d-field">Arbeit</div>
+        <div class="d-field">Spesen</div>
+        <div class="d-field d-field-notiz">Notiz</div>
+        <div class="d-actions no-print"></div>
+      </div>
+      <div class="day-legend no-print">Wochenende <span class="legend-dot legend-weekend"></span>${isGermanAssignment(a) ? ' &middot; Feiertag (DE) <span class="legend-dot legend-holiday"></span>' : ''}</div>
+      <div class="day-list">
+        ${(a.tage || []).slice().sort((x, y) => (x.datum || '').localeCompare(y.datum || '')).map(d => renderDayRow(a, d)).join('')}
+        ${(!a.tage || a.tage.length === 0) ? '<div class="empty-days">Noch keine Tage erfasst.</div>' : ''}
+      </div>
+      ${a.tage && a.tage.length > 0 ? `
+      <div class="day-row day-row-total">
+        <div class="d-field"><span class="field-label">Gesamt</span><span class="mono">${a.tage.length} Tage</span></div>
+        <div class="d-field"><span class="field-label">Reise</span><span class="mono travel-color">${fmtHours(t.reise)}</span></div>
+        <div class="d-field"><span class="field-label">Arbeit</span><span class="mono work-color">${fmtHours(t.arbeit)}</span></div>
+        <div class="d-field"><span class="field-label">Spesen</span><span class="mono">${fmtEuro(t.spesen)}</span></div>
+        <div class="d-field-notiz"></div>
+        <div class="d-actions"></div>
+      </div>` : ''}
+      ${renderAddDayForm(a)}
+      <div class="card-actions no-print">
+        <button class="btn btn-ghost btn-sm" data-action="show-add-day" data-id="${a.id}">+ Einzelnen Tag anpassen/ergänzen</button>
+        <button class="btn btn-ghost btn-sm" data-action="export-csv-assignment" data-id="${a.id}">CSV export</button>
+        <button class="btn btn-ghost btn-sm" data-action="print-single-assignment" data-id="${a.id}">PDF export</button>
+        <button class="btn btn-ghost btn-sm" data-action="edit-assignment" data-id="${a.id}">Bearbeiten</button>
+        <button class="btn btn-ghost btn-sm danger" data-action="delete-assignment" data-id="${a.id}">Löschen</button>
+      </div>
+    </div>` : '';
+
+  return `
+    <div class="dienstreise-card" data-id="${a.id}">
+      <div class="card-header" data-action="toggle-card" data-id="${a.id}" role="button" tabindex="0" aria-expanded="${isExpanded}">
+        <span class="seq-badge mono">${pad2(seq)}</span>
+        <div class="card-heading">
+          <div class="card-place">${esc(placeLabel(a))}</div>
+          ${a.kunde ? `<div class="card-customer">${esc(a.kunde)}</div>` : ''}
+          <div class="card-meta mono">${fmtDateDE(a.start)} – ${a.ende ? fmtDateDE(a.ende) : 'laufend'} · ${durLabel}</div>
+        </div>
+        <div class="card-totals">
+          <span class="chip chip-travel">Reise <b class="mono">${fmtHours(t.reise)}</b></span>
+          <span class="chip chip-work">Arbeit <b class="mono">${fmtHours(t.arbeit)}</b></span>
+          ${t.spesen > 0 ? `<span class="chip chip-expense">Spesen <b class="mono">${fmtEuro(t.spesen)}</b></span>` : ''}
+        </div>
+        <button class="chevron-btn no-print" aria-hidden="true">${isExpanded ? '−' : '+'}</button>
+      </div>
+      ${body}
+    </div>`;
+}
+
+function renderList() {
+  if (state.assignments.length === 0) {
+    return `
+      <div class="empty-state">
+        <div class="empty-state-title">Noch keine Dienstreise erfasst</div>
+        <p>Nutze "+ Neue Dienstreise" oben, um deinen ersten Einsatz anzulegen.</p>
+      </div>`;
+  }
+  const asc = sortedAsc();
+  const seqMap = new Map();
+  asc.forEach((a, i) => seqMap.set(a.id, i + 1));
+  const desc = [...asc].reverse();
+  return `<div class="card-list">${desc.map(a => renderAssignmentCard(a, seqMap.get(a.id))).join('')}</div>`;
+}
+
+function renderLaenderSaetzeNotice() {
+  if (!countryRatesByYear) return '';
+  const latest = latestRatesYear();
+  if (!latest) return '';
+  const latestData = countryRatesByYear[String(latest)] || {};
+  const jahreVerfuegbar = Object.keys(countryRatesByYear).length;
+  const veraltet = laenderTabelleVeraltet();
+  const unvollstaendig = latestData.vollstaendig === false;
+  if (!veraltet && !unvollstaendig) {
+    return `<span class="footer-hint">Länder-Tagessätze: ${esc(String(jahreVerfuegbar))} Jahr(e) hinterlegt, neuestes ${esc(String(latest))} (${esc(latestData.quelle || '')}). Historische Dienstreisen nutzen automatisch den Satz ihres Jahres.</span>`;
+  }
+  const parts = [];
+  if (veraltet) parts.push(`neuestes Jahr ${esc(String(latest))} evtl. veraltet`);
+  if (unvollstaendig) parts.push(`${esc(String(latest))} bisher nur einzelne Länder erfasst`);
+  return `<span class="footer-hint footer-hint-warn">⚠️ Länder-Tagessätze: ${parts.join(', ')} – aktuelle Liste auf bundesfinanzministerium.de prüfen.</span>`;
+}
+
+
+function footerStorageText() {
+  if (storageBackend === 'claude') return 'Daten werden hier in Claude gespeichert (dieses Artifact).';
+  if (storageBackend === 'local') return 'Daten liegen lokal in diesem Browser.';
+  return '⚠️ Kein dauerhafter Speicher verfügbar – Daten gehen beim Schließen verloren, bitte Sicherung exportieren.';
+}
+
+function render() {
+  const app = document.getElementById('app');
+  if (!loaded) {
+    app.innerHTML = '<div class="loading mono">Lade Daten …</div>';
+    return;
+  }
+  app.innerHTML = `
+    <div class="print-only print-title">Reise- &amp; Arbeitszeit-Nachweis Dienstreisen</div>
+    ${renderTopbar()}
+    ${renderTimeline()}
+    ${renderYearSummary()}
+    ${renderWeekSummary()}
+    ${renderCalendarSection()}
+    ${renderToolbar()}
+    ${renderSyncBar()}
+    ${renderAddAssignmentForm()}
+    ${renderList()}
+    <footer class="app-footer no-print">
+      <span>${footerStorageText()} ${getSyncConfig() ? 'Cloud-Sync ist eingerichtet – Änderungen über den Sync-Button oben abgleichen.' : 'Für ein zweites Gerät: Cloud-Sync einrichten (oben) oder Sicherung exportieren und manuell übertragen.'}</span>
+      ${renderLaenderSaetzeNotice()}
+      <div class="employee-settings">
+        <label>Name (für PDF-Export) <input type="text" value="${esc((state.settings && state.settings.mitarbeiterName) || '')}" data-action="update-mitarbeiter-name" placeholder="Vor- und Nachname"></label>
+        <label>Personalnr. <input type="text" value="${esc((state.settings && state.settings.personalnummer) || '')}" data-action="update-personalnummer" placeholder="optional"></label>
+      </div>
+      <span class="footer-actions">
+        <button class="link-btn" data-action="export-json">Sicherung exportieren</button>
+        <label class="link-btn file-label">Sicherung importieren<input type="file" accept="application/json" class="visually-hidden" data-action="import-json-file"></label>
+        <button class="link-btn danger" data-action="reset-all">Alle Daten löschen</button>
+      </span>
+    </footer>
+    ${renderSingleAssignmentPrintSheet()}
+    ${renderErrorPopup()}
+  `;
+}
+
+/* ----------------------- event handling ----------------------- */
+
+function onClick(e) {
+  const comboOption = e.target.closest('.combo-option');
+  if (comboOption) {
+    const wrap = comboOption.closest('.combo-wrap');
+    const input = wrap.querySelector('.combo-input');
+    input.value = comboOption.getAttribute('data-value');
+    closeCombo(wrap);
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    return;
+  }
+
+  const target = e.target.closest('[data-action]');
+  if (!target) return;
+  const action = target.getAttribute('data-action');
+  const id = target.getAttribute('data-id');
+  const parent = target.getAttribute('data-parent');
+
+  switch (action) {
+    case 'close-error-popup':
+      ui.errorPopup = null;
+      render();
+      break;
+    case 'toggle-all-weeks':
+      ui.showAllWeeks = !ui.showAllWeeks;
+      render();
+      break;
+    case 'cal-prev':
+      ui.calendarMonth = shiftYearMonth(ui.calendarMonth || currentYearMonth(), -1);
+      render();
+      break;
+    case 'cal-next':
+      ui.calendarMonth = shiftYearMonth(ui.calendarMonth || currentYearMonth(), 1);
+      render();
+      break;
+    case 'cal-today':
+      ui.calendarMonth = currentYearMonth();
+      ui.selectedCalDay = todayISO();
+      ui.showAddAbwesenheit = false;
+      ui.editingAbwesenheitId = null;
+      render();
+      break;
+    case 'select-cal-day':
+      ui.selectedCalDay = ui.selectedCalDay === id ? null : id;
+      ui.showAddAbwesenheit = false;
+      ui.editingAbwesenheitId = null;
+      render();
+      break;
+    case 'close-cal-day':
+      ui.selectedCalDay = null;
+      ui.showAddAbwesenheit = false;
+      ui.editingAbwesenheitId = null;
+      render();
+      break;
+    case 'show-add-abwesenheit':
+      ui.showAddAbwesenheit = true;
+      render();
+      break;
+    case 'cancel-add-abwesenheit':
+      ui.showAddAbwesenheit = false;
+      render();
+      break;
+    case 'edit-abwesenheit':
+      ui.editingAbwesenheitId = id;
+      ui.showAddAbwesenheit = false;
+      if (!ui.selectedCalDay) {
+        const a = (state.abwesenheiten || []).find(x => x.id === id);
+        if (a) ui.selectedCalDay = a.start;
+      }
+      render();
+      break;
+    case 'cancel-edit-abwesenheit':
+      ui.editingAbwesenheitId = null;
+      render();
+      break;
+    case 'delete-abwesenheit':
+      if (confirm('Diese Abwesenheit wirklich löschen?')) {
+        state.abwesenheiten = (state.abwesenheiten || []).filter(x => x.id !== id);
+        ui.editingAbwesenheitId = null;
+        persist();
+        render();
+      }
+      break;
+    case 'toggle-card':
+      if (ui.expanded.has(id)) ui.expanded.delete(id); else ui.expanded.add(id);
+      render();
+      break;
+    case 'show-add-assignment':
+      ui.showAddAssignment = true;
+      render();
+      document.querySelector('[name="land"]')?.focus();
+      break;
+    case 'cancel-add-assignment':
+      ui.showAddAssignment = false;
+      render();
+      break;
+    case 'edit-assignment':
+      ui.editingAssignmentId = id;
+      render();
+      break;
+    case 'cancel-edit-assignment':
+      ui.editingAssignmentId = null;
+      render();
+      break;
+    case 'delete-assignment': {
+      const a = state.assignments.find(x => x.id === id);
+      const label = a ? placeLabel(a) : 'diese Dienstreise';
+      if (confirm(`"${label}" inkl. aller erfassten Tage wirklich löschen?`)) {
+        state.assignments = state.assignments.filter(x => x.id !== id);
+        ui.expanded.delete(id);
+        persist();
+        render();
+      }
+      break;
+    }
+    case 'show-add-day':
+      ui.addingDayFor = id;
+      ui.editingDayId = null;
+      render();
+      break;
+    case 'cancel-add-day':
+      ui.addingDayFor = null;
+      render();
+      break;
+    case 'edit-day':
+      ui.editingDayId = id;
+      ui.addingDayFor = null;
+      render();
+      break;
+    case 'cancel-edit-day':
+      ui.editingDayId = null;
+      render();
+      break;
+    case 'delete-day': {
+      const a = state.assignments.find(x => x.id === parent);
+      if (a && confirm('Diesen Tageseintrag wirklich löschen?')) {
+        a.tage = (a.tage || []).filter(d => d.id !== id);
+        persist();
+        render();
+      }
+      break;
+    }
+    case 'export-csv-all':
+      exportAllCSV();
+      break;
+    case 'export-csv-assignment':
+      exportAssignmentCSV(id);
+      break;
+    case 'print-single-assignment':
+      printSingleAssignment(id);
+      break;
+    case 'export-json':
+      exportJSON();
+      break;
+    case 'clear-autoday-times': {
+      const panel = target.closest('.autoday-block');
+      if (panel) {
+        panel.querySelectorAll('select[name^="arbeitStart_"], select[name^="arbeitEnde_"]').forEach(sel => { sel.value = ''; });
+      }
+      break;
+    }
+    case 'do-sync':
+      doSync();
+      break;
+    case 'toggle-sync-settings':
+      ui.showSyncSettings = !ui.showSyncSettings;
+      render();
+      break;
+    case 'cancel-sync-settings':
+      ui.showSyncSettings = false;
+      render();
+      break;
+    case 'remove-sync-settings':
+      if (confirm('Cloud-Sync-Verbindung auf diesem Gerät entfernen? Die Daten in der Cloud bleiben bestehen, nur die Verknüpfung hier wird gelöscht.')) {
+        clearSyncConfig();
+        ui.showSyncSettings = false;
+        render();
+      }
+      break;
+    case 'print-all':
+      printAll();
+      break;
+    case 'reset-all':
+      resetAll();
+      break;
+    default:
+      break;
+  }
+}
+
+function onSubmit(e) {
+  const form = e.target.closest('form[data-form]');
+  if (!form) return;
+  e.preventDefault();
+  const type = form.getAttribute('data-form');
+  const fd = new FormData(form);
+
+  if (type === 'add-abwesenheit') {
+    const typ = (fd.get('typ') || '').toString();
+    const start = (fd.get('start') || '').toString();
+    const ende = (fd.get('ende') || '').toString();
+    if (!typ || !start || !ende) { showError('Angaben fehlen', 'Bitte Art, Start- und Enddatum angeben.'); return; }
+    if (ende < start) { showError('Ungültiger Zeitraum', 'Das Enddatum liegt vor dem Startdatum.'); return; }
+    if (!Array.isArray(state.abwesenheiten)) state.abwesenheiten = [];
+    state.abwesenheiten.push({
+      id: uid(), typ, start, ende,
+      notiz: (fd.get('notiz') || '').toString().trim()
+    });
+    ui.showAddAbwesenheit = false;
+    persist();
+    render();
+  }
+
+  if (type === 'edit-abwesenheit') {
+    const abwId = form.getAttribute('data-id');
+    const x = (state.abwesenheiten || []).find(a => a.id === abwId);
+    if (!x) return;
+    const typ = (fd.get('typ') || '').toString();
+    const start = (fd.get('start') || '').toString();
+    const ende = (fd.get('ende') || '').toString();
+    if (!typ || !start || !ende) { showError('Angaben fehlen', 'Bitte Art, Start- und Enddatum angeben.'); return; }
+    if (ende < start) { showError('Ungültiger Zeitraum', 'Das Enddatum liegt vor dem Startdatum.'); return; }
+    x.typ = typ;
+    x.start = start;
+    x.ende = ende;
+    x.notiz = (fd.get('notiz') || '').toString().trim();
+    ui.editingAbwesenheitId = null;
+    persist();
+    render();
+  }
+
+  if (type === 'add-assignment') {
+    const land = (fd.get('land') || '').toString().trim();
+    const start = (fd.get('start') || '').toString();
+    if (!land || !start) { showError('Angaben fehlen', 'Bitte mindestens Land und Startdatum angeben.'); return; }
+    const ende = (fd.get('ende') || '').toString() || null;
+    const neu = {
+      id: uid(),
+      land,
+      ort: (fd.get('ort') || '').toString().trim(),
+      kunde: (fd.get('kunde') || '').toString().trim(),
+      start,
+      ende,
+      tagessatz: fd.get('tagessatz') ? Number(fd.get('tagessatz')) : 0,
+      uebernachtungspauschale: fd.get('uebernachtungspauschale') ? Number(fd.get('uebernachtungspauschale')) : 0,
+      notiz: (fd.get('notiz') || '').toString().trim(),
+      tage: []
+    };
+    state.assignments.push(neu);
+
+    let autoInfo = '';
+    if (ende) {
+      const wdKeys = { 0: 'wd_so', 1: 'wd_mo', 2: 'wd_di', 3: 'wd_mi', 4: 'wd_do', 5: 'wd_fr', 6: 'wd_sa' };
+      const activeWeekdays = new Set();
+      Object.keys(wdKeys).forEach(dow => { if (fd.get(wdKeys[dow])) activeWeekdays.add(Number(dow)); });
+      const arbeitStart = combineTimeFromForm(fd, 'arbeitStart');
+      const arbeitEnde = combineTimeFromForm(fd, 'arbeitEnde');
+      const { created } = generateDaysForRange(neu, start, ende, activeWeekdays, arbeitStart, arbeitEnde, 0, false, false, false, '');
+      if (created > 0) {
+        autoInfo = ` ${created} Tag(e) wurden automatisch angelegt (Verpflegung durchgängig, Arbeitszeit an den gewählten Wochentagen). Randtage bei Bedarf um Reisezeit ergänzen.`;
+        ui.expanded.add(neu.id); // nur aufklappen, wenn es auch etwas zu zeigen gibt
+      }
+    }
+
+    ui.showAddAssignment = false;
+    persist();
+    render();
+    if (autoInfo) showInfo('Dienstreise angelegt', autoInfo.trim());
+  }
+
+  if (type === 'edit-assignment') {
+    const id = form.getAttribute('data-id');
+    const a = state.assignments.find(x => x.id === id);
+    if (!a) return;
+    const land = (fd.get('land') || '').toString().trim();
+    const start = (fd.get('start') || '').toString();
+    if (!land || !start) { showError('Angaben fehlen', 'Bitte mindestens Land und Startdatum angeben.'); return; }
+    a.land = land;
+    a.ort = (fd.get('ort') || '').toString().trim();
+    a.kunde = (fd.get('kunde') || '').toString().trim();
+    a.start = start;
+    a.ende = (fd.get('ende') || '').toString() || null;
+    a.tagessatz = fd.get('tagessatz') ? Number(fd.get('tagessatz')) : 0;
+    a.uebernachtungspauschale = fd.get('uebernachtungspauschale') ? Number(fd.get('uebernachtungspauschale')) : 0;
+    a.notiz = (fd.get('notiz') || '').toString().trim();
+    ui.editingAssignmentId = null;
+    persist();
+    render();
+  }
+
+  if (type === 'add-day') {
+    const parentId = form.getAttribute('data-parent');
+    const a = state.assignments.find(x => x.id === parentId);
+    if (!a) return;
+    const datum = (fd.get('datum') || '').toString();
+    if (!datum) { showError('Datum fehlt', 'Bitte ein Datum angeben.'); return; }
+    if (!a.tage) a.tage = [];
+
+    const isBulk = !!form.querySelector('.bulk-toggle-checkbox:checked');
+
+    if (isBulk) {
+      const bulkEnde = (fd.get('bulkEnde') || '').toString();
+      if (!bulkEnde) { showError('Enddatum fehlt', 'Bitte für die Serienerfassung ein Enddatum ("Bis") angeben.'); return; }
+      if (bulkEnde < datum) { showError('Ungültiger Zeitraum', 'Das Enddatum liegt vor dem Startdatum.'); return; }
+      const wdKeys = { 0: 'wd_so', 1: 'wd_mo', 2: 'wd_di', 3: 'wd_mi', 4: 'wd_do', 5: 'wd_fr', 6: 'wd_sa' };
+      const activeWeekdays = new Set();
+      Object.keys(wdKeys).forEach(dow => { if (fd.get(wdKeys[dow])) activeWeekdays.add(Number(dow)); });
+
+      const arbeitStart = combineTimeFromForm(fd, 'arbeitStart');
+      const arbeitEnde = combineTimeFromForm(fd, 'arbeitEnde');
+      const manualSpesen = fd.get('spesen') ? Number(fd.get('spesen')) : 0;
+      const fruehstueck = !!fd.get('mahlzeit_fruehstueck');
+      const mittag = !!fd.get('mahlzeit_mittag');
+      const abend = !!fd.get('mahlzeit_abend');
+      const notiz = (fd.get('notiz') || '').toString().trim();
+
+      const { created, skipped } = generateDaysForRange(a, datum, bulkEnde, activeWeekdays, arbeitStart, arbeitEnde, manualSpesen, fruehstueck, mittag, abend, notiz);
+      ui.lastDate = { parent: a.id, value: addDaysISO(bulkEnde, 1) };
+      persist();
+      render();
+      if (created === 0) {
+        showError('Keine Tage angelegt', `Alle ${skipped} Tage im Zeitraum waren bereits erfasst.`);
+      } else if (skipped > 0) {
+        showInfo('Serienerfassung abgeschlossen', `${created} Tag(e) angelegt, ${skipped} bereits vorhandene(r) Tag(e) übersprungen.`);
+      }
+      return;
+    }
+
+    const isFrei = !!form.querySelector('.frei-toggle-checkbox:checked');
+    a.tage.push({
+      id: uid(),
+      datum,
+      reiseStart: combineTimeFromForm(fd, 'reiseStart'),
+      reiseEnde: combineTimeFromForm(fd, 'reiseEnde'),
+      arbeitStart: isFrei ? '' : combineTimeFromForm(fd, 'arbeitStart'),
+      arbeitEnde: isFrei ? '' : combineTimeFromForm(fd, 'arbeitEnde'),
+      frei: isFrei,
+      spesen: fd.get('spesen') ? Number(fd.get('spesen')) : 0,
+      fruehstueck: !!fd.get('mahlzeit_fruehstueck'),
+      mittag: !!fd.get('mahlzeit_mittag'),
+      abend: !!fd.get('mahlzeit_abend'),
+      notiz: (fd.get('notiz') || '').toString().trim()
+    });
+    ui.lastDate = { parent: a.id, value: addDaysISO(datum, 1) };
+    persist();
+    render();
+    document.querySelector(`form[data-form="add-day"] input[name="datum"]`)?.focus();
+  }
+
+  if (type === 'edit-day') {
+    const parentId = form.getAttribute('data-parent');
+    const dayId = form.getAttribute('data-id');
+    const a = state.assignments.find(x => x.id === parentId);
+    if (!a) return;
+    const d = (a.tage || []).find(x => x.id === dayId);
+    if (!d) return;
+    const datum = (fd.get('datum') || '').toString();
+    if (!datum) { showError('Datum fehlt', 'Bitte ein Datum angeben.'); return; }
+    d.datum = datum;
+    const isFrei = !!form.querySelector('.frei-toggle-checkbox:checked');
+    d.reiseStart = combineTimeFromForm(fd, 'reiseStart');
+    d.reiseEnde = combineTimeFromForm(fd, 'reiseEnde');
+    d.arbeitStart = isFrei ? '' : combineTimeFromForm(fd, 'arbeitStart');
+    d.arbeitEnde = isFrei ? '' : combineTimeFromForm(fd, 'arbeitEnde');
+    d.frei = isFrei;
+    d.spesen = fd.get('spesen') ? Number(fd.get('spesen')) : 0;
+    d.fruehstueck = !!fd.get('mahlzeit_fruehstueck');
+    d.mittag = !!fd.get('mahlzeit_mittag');
+    d.abend = !!fd.get('mahlzeit_abend');
+    d.notiz = (fd.get('notiz') || '').toString().trim();
+    ui.editingDayId = null;
+    persist();
+    render();
+  }
+
+  if (type === 'sync-settings') {
+    const apiKey = (fd.get('apiKey') || '').toString().trim();
+    const binId = (fd.get('binId') || '').toString().trim();
+    if (!apiKey) { showError('Angaben fehlen', 'Bitte den Master-Key eintragen.'); return; }
+    const existing = getSyncConfig();
+    setSyncConfig({ apiKey, binId: binId || (existing ? existing.binId : ''), lastSyncedAt: existing ? existing.lastSyncedAt : 0 });
+    ui.showSyncSettings = false;
+    render();
+    doSync();
+  }
+}
+
+function autofillOneField(input, value, existing) {
+  if (!input) return;
+  const wasAutofilled = input.dataset.autofilled === '1';
+  if (input.value && !wasAutofilled) return; // Nutzer hat selbst etwas eingetragen - nicht anfassen
+  if (value !== null && value !== undefined) {
+    input.value = value;
+    input.dataset.autofilled = '1';
+  } else if (wasAutofilled) {
+    input.value = '';
+    delete input.dataset.autofilled;
+  }
+}
+
+function tryAutofillTagessatz(form) {
+  const landInput = form.querySelector('input[name="land"]');
+  const ortInput = form.querySelector('input[name="ort"]');
+  const startInput = form.querySelector('input[name="start"]');
+  const tagessatzInput = form.querySelector('input[name="tagessatz"]');
+  const uebernachtungInput = form.querySelector('input[name="uebernachtungspauschale"]');
+  if (!landInput || !startInput) return;
+  const year = startInput.value ? Number(startInput.value.slice(0, 4)) : null;
+  const entry = year ? lookupLaenderSatz(landInput.value, ortInput ? ortInput.value : '', year) : null;
+  autofillOneField(tagessatzInput, entry ? entry.tag : null);
+  autofillOneField(uebernachtungInput, entry && entry.uebernachtung !== undefined ? entry.uebernachtung : null);
+}
+
+function recalcVerpflegung(form) {
+  const parentId = form.getAttribute('data-parent');
+  const a = state.assignments.find(x => x.id === parentId);
+  if (!a || !a.tagessatz || a.tagessatz <= 0) return;
+  const datum = form.querySelector('input[name="datum"]');
+  const spesenInput = form.querySelector('input[name="spesen"]');
+  if (!datum || !spesenInput) return;
+  const edge = isEdgeDay(a, datum.value);
+  const fr = form.querySelector('input[name="mahlzeit_fruehstueck"]');
+  const mi = form.querySelector('input[name="mahlzeit_mittag"]');
+  const ab = form.querySelector('input[name="mahlzeit_abend"]');
+  const betrag = verpflegungBetrag(a.tagessatz, edge, fr && fr.checked, mi && mi.checked, ab && ab.checked);
+  spesenInput.value = betrag > 0 ? betrag.toFixed(2) : '';
+}
+
+function onInput(e) {
+  const comboInput = e.target.closest('.combo-input');
+  if (comboInput) {
+    renderComboOptions(comboInput);
+  }
+}
+
+function onFocusIn(e) {
+  const comboInput = e.target.closest('.combo-input');
+  if (comboInput) {
+    closeAllCombos();
+    renderComboOptions(comboInput);
+  }
+}
+
+function onChange(e) {
+  const fileInput = e.target.closest('[data-action="import-json-file"]');
+  if (fileInput && fileInput.files && fileInput.files[0]) {
+    importJSONFile(fileInput.files[0]);
+    fileInput.value = '';
+    return;
+  }
+  const tagessatzManual = e.target.closest('form[data-form="add-assignment"] input[name="tagessatz"], form[data-form="edit-assignment"] input[name="tagessatz"]');
+  if (tagessatzManual) {
+    delete tagessatzManual.dataset.autofilled;
+    return;
+  }
+  const uebernachtungManual = e.target.closest('form[data-form="add-assignment"] input[name="uebernachtungspauschale"], form[data-form="edit-assignment"] input[name="uebernachtungspauschale"]');
+  if (uebernachtungManual) {
+    delete uebernachtungManual.dataset.autofilled;
+    return;
+  }
+  const landOrStartInput = e.target.closest(
+    'form[data-form="add-assignment"] input[name="land"], form[data-form="edit-assignment"] input[name="land"], ' +
+    'form[data-form="add-assignment"] input[name="ort"], form[data-form="edit-assignment"] input[name="ort"], ' +
+    'form[data-form="add-assignment"] input[name="start"], form[data-form="edit-assignment"] input[name="start"]'
+  );
+  if (landOrStartInput) {
+    const form = landOrStartInput.closest('form');
+    tryAutofillTagessatz(form);
+    return;
+  }
+  const bulkCheck = e.target.closest('.bulk-toggle-checkbox');
+  if (bulkCheck) {
+    const form = bulkCheck.closest('form');
+    if (form) {
+      const reiseWrap = form.querySelector('.reise-toggle-wrap');
+      const freiWrap = form.querySelector('.frei-toggle-wrap');
+      if (reiseWrap) reiseWrap.style.display = bulkCheck.checked ? 'none' : '';
+      if (freiWrap) freiWrap.style.display = bulkCheck.checked ? 'none' : '';
+    }
+    return;
+  }
+  const freiCheck = e.target.closest('.frei-toggle-checkbox');
+  if (freiCheck) {
+    const form = freiCheck.closest('form');
+    if (form) {
+      const arbeitWrap = form.querySelector('.arbeit-fields-wrap');
+      if (arbeitWrap) arbeitWrap.classList.toggle('arbeit-fields-hidden', freiCheck.checked);
+    }
+    return;
+  }
+  const verpflegungCheck = e.target.closest('.verpflegung-check');
+  if (verpflegungCheck) {
+    const form = verpflegungCheck.closest('form');
+    if (form) recalcVerpflegung(form);
+    return;
+  }
+  const datumInput = e.target.closest('.day-edit-form input[name="datum"]');
+  if (datumInput) {
+    const form = datumInput.closest('form');
+    if (form) recalcVerpflegung(form);
+    return;
+  }
+  const urlaubInput = e.target.closest('[data-action="update-urlaubstage"]');
+  if (urlaubInput) {
+    let val = Number(urlaubInput.value);
+    if (Number.isNaN(val) || val < 0) val = 0;
+    if (val > 365) val = 365;
+    if (!state.settings) state.settings = {};
+    state.settings.urlaubstage = val;
+    persist();
+    render();
+    return;
+  }
+  const sollInput = e.target.closest('[data-action="update-sollwochenstunden"]');
+  if (sollInput) {
+    let val = Number(sollInput.value);
+    if (Number.isNaN(val) || val < 0) val = 0;
+    if (val > 168) val = 168;
+    if (!state.settings) state.settings = {};
+    state.settings.sollWochenstunden = val;
+    persist();
+    render();
+    return;
+  }
+  const nameInput = e.target.closest('[data-action="update-mitarbeiter-name"]');
+  if (nameInput) {
+    if (!state.settings) state.settings = {};
+    state.settings.mitarbeiterName = nameInput.value.trim();
+    persist();
+    return;
+  }
+  const personalnrInput = e.target.closest('[data-action="update-personalnummer"]');
+  if (personalnrInput) {
+    if (!state.settings) state.settings = {};
+    state.settings.personalnummer = personalnrInput.value.trim();
+    persist();
+    return;
+  }
+}
+
+function onKeydown(e) {
+  if (e.key === 'Escape' && ui.errorPopup) {
+    ui.errorPopup = null;
+    render();
+    return;
+  }
+  const comboInput = e.target.closest('.combo-input');
+  if (comboInput) {
+    const wrap = comboInput.closest('.combo-wrap');
+    if (e.key === 'Escape') {
+      closeCombo(wrap);
+      return;
+    }
+    if (e.key === 'Enter' && wrap && wrap.classList.contains('combo-open')) {
+      const firstOption = wrap.querySelector('.combo-option');
+      if (firstOption) {
+        e.preventDefault();
+        comboInput.value = firstOption.getAttribute('data-value');
+        closeCombo(wrap);
+        comboInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      return;
+    }
+  }
+  const target = e.target.closest('[data-action="toggle-card"]');
+  if (target && (e.key === 'Enter' || e.key === ' ')) {
+    e.preventDefault();
+    target.click();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const app = document.getElementById('app');
+  app.addEventListener('click', onClick);
+  app.addEventListener('submit', onSubmit);
+  app.addEventListener('keydown', onKeydown);
+  app.addEventListener('change', onChange);
+  app.addEventListener('input', onInput);
+  app.addEventListener('focusin', onFocusIn);
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.combo-wrap')) closeAllCombos();
+  });
+  init();
+});
+</script>
+<script>
+// Service Worker: nur relevant, wenn die Datei über eine echte URL (z.B. GitHub Pages)
+// aufgerufen wird - lokal/als Claude-Artifact schlägt die Registrierung einfach fehl
+// und wird stillschweigend ignoriert (kein Funktionsverlust).
+if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+  let swRefreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (swRefreshing) return;
+    swRefreshing = true;
+    window.location.reload();
+  });
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      reg.update();
+      setInterval(() => reg.update(), 60 * 60 * 1000); // stündlich erneut prüfen, falls die App lange offen bleibt
+    }).catch(() => { /* kein SW-Support/keine gültige URL - kein Problem */ });
+  });
+}
+</script>
+</body>
+</html>

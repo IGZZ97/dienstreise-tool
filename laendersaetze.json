@@ -1,0 +1,687 @@
+{
+ "jahre": {
+  "2025": {
+   "quelle": "BMF-Schreiben vom 02.12.2024 (gültig ab 01.01.2025)",
+   "vollstaendig": true,
+   "saetze": {
+    "Afghanistan": {
+     "default": 30
+    },
+    "Ägypten": {
+     "default": 50
+    },
+    "Äthiopien": {
+     "default": 44
+    },
+    "Äquatorialguinea": {
+     "default": 42
+    },
+    "Albanien": {
+     "default": 27
+    },
+    "Algerien": {
+     "default": 47
+    },
+    "Andorra": {
+     "default": 41
+    },
+    "Angola": {
+     "default": 40
+    },
+    "Argentinien": {
+     "default": 35
+    },
+    "Armenien": {
+     "default": 29
+    },
+    "Aserbaidschan": {
+     "default": 44
+    },
+    "Australien": {
+     "orte": {
+      "Canberra": 74,
+      "Sydney": 57
+     },
+     "default": 57
+    },
+    "Bahrain": {
+     "default": 48
+    },
+    "Bangladesch": {
+     "default": 46
+    },
+    "Barbados": {
+     "default": 54
+    },
+    "Belgien": {
+     "default": 59
+    },
+    "Benin": {
+     "default": 40
+    },
+    "Bhutan": {
+     "default": 27
+    },
+    "Bolivien": {
+     "default": 46
+    },
+    "Bosnien und Herzegowina": {
+     "default": 23
+    },
+    "Botsuana": {
+     "default": 46
+    },
+    "Brasilien": {
+     "orte": {
+      "Brasilia": 51,
+      "Rio de Janeiro": 69,
+      "Sao Paulo": 46
+     },
+     "default": 46
+    },
+    "Brunei": {
+     "default": 45
+    },
+    "Bulgarien": {
+     "default": 22
+    },
+    "Burkina Faso": {
+     "default": 38
+    },
+    "Burundi": {
+     "default": 36
+    },
+    "Chile": {
+     "default": 44
+    },
+    "China": {
+     "orte": {
+      "Chengdu": 41,
+      "Hongkong": 71,
+      "Kanton": 36,
+      "Peking": 30,
+      "Shanghai": 58
+     },
+     "default": 48
+    },
+    "Costa Rica": {
+     "default": 60
+    },
+    "Côte d'Ivoire": {
+     "default": 59
+    },
+    "Dänemark": {
+     "default": 75
+    },
+    "Dominikanische Republik": {
+     "default": 50
+    },
+    "Dschibuti": {
+     "default": 77
+    },
+    "Ecuador": {
+     "default": 27
+    },
+    "El Salvador": {
+     "default": 65
+    },
+    "Eritrea": {
+     "default": 46
+    },
+    "Estland": {
+     "default": 29
+    },
+    "Fidschi": {
+     "default": 32
+    },
+    "Finnland": {
+     "default": 54
+    },
+    "Frankreich": {
+     "orte": {
+      "Paris": 58
+     },
+     "default": 53
+    },
+    "Gabun": {
+     "default": 64
+    },
+    "Gambia": {
+     "default": 40
+    },
+    "Georgien": {
+     "default": 45
+    },
+    "Ghana": {
+     "default": 46
+    },
+    "Griechenland": {
+     "orte": {
+      "Athen": 40
+     },
+     "default": 36
+    },
+    "Guatemala": {
+     "default": 46
+    },
+    "Guinea": {
+     "default": 59
+    },
+    "Guinea-Bissau": {
+     "default": 32
+    },
+    "Haiti": {
+     "default": 58
+    },
+    "Honduras": {
+     "default": 57
+    },
+    "Indien": {
+     "orte": {
+      "Bangalore": 42,
+      "Chennai": 22,
+      "Kalkutta": 32,
+      "Mumbai": 53,
+      "Neu Delhi": 46
+     },
+     "default": 22
+    },
+    "Indonesien": {
+     "default": 45
+    },
+    "Iran": {
+     "default": 33
+    },
+    "Irland": {
+     "default": 58
+    },
+    "Island": {
+     "default": 62
+    },
+    "Israel": {
+     "default": 66
+    },
+    "Italien": {
+     "orte": {
+      "Mailand": 42,
+      "Rom": 48
+     },
+     "default": 42
+    },
+    "Jamaika": {
+     "default": 39
+    },
+    "Japan": {
+     "orte": {
+      "Tokio": 50,
+      "Osaka": 33
+     },
+     "default": 33
+    },
+    "Jemen": {
+     "default": 24
+    },
+    "Jordanien": {
+     "default": 57
+    },
+    "Kambodscha": {
+     "default": 42
+    },
+    "Kamerun": {
+     "default": 56
+    },
+    "Kanada": {
+     "orte": {
+      "Ottawa": 62,
+      "Toronto": 54,
+      "Vancouver": 63
+     },
+     "default": 54
+    },
+    "Kap Verde": {
+     "default": 38
+    },
+    "Kasachstan": {
+     "default": 33
+    },
+    "Katar": {
+     "default": 56
+    },
+    "Kenia": {
+     "default": 51
+    },
+    "Kirgisistan": {
+     "default": 27
+    },
+    "Kolumbien": {
+     "default": 34
+    },
+    "Kongo, Republik": {
+     "default": 62
+    },
+    "Kongo, Demokratische Republik": {
+     "default": 65
+    },
+    "Korea, Demokratische Volksrepublik": {
+     "default": 28
+    },
+    "Korea, Republik": {
+     "default": 48
+    },
+    "Kosovo": {
+     "default": 24
+    },
+    "Kroatien": {
+     "default": 46
+    },
+    "Kuba": {
+     "default": 51
+    },
+    "Kuwait": {
+     "default": 56
+    },
+    "Laos": {
+     "default": 35
+    },
+    "Lesotho": {
+     "default": 28
+    },
+    "Lettland": {
+     "default": 35
+    },
+    "Libyen": {
+     "default": 63
+    },
+    "Libanon": {
+     "default": 69
+    },
+    "Liberia": {
+     "default": 65
+    },
+    "Liechtenstein": {
+     "default": 56
+    },
+    "Litauen": {
+     "default": 26
+    },
+    "Luxemburg": {
+     "default": 63
+    },
+    "Madagaskar": {
+     "default": 33
+    },
+    "Malawi": {
+     "default": 41
+    },
+    "Malaysia": {
+     "default": 36
+    },
+    "Malediven": {
+     "default": 70
+    },
+    "Mali": {
+     "default": 38
+    },
+    "Malta": {
+     "default": 46
+    },
+    "Marokko": {
+     "default": 41
+    },
+    "Marshall Inseln": {
+     "default": 63
+    },
+    "Mauretanien": {
+     "default": 35
+    },
+    "Mauritius": {
+     "default": 44
+    },
+    "Mexiko": {
+     "default": 48
+    },
+    "Moldau, Republik": {
+     "default": 26
+    },
+    "Monaco": {
+     "default": 52
+    },
+    "Mongolei": {
+     "default": 23
+    },
+    "Montenegro": {
+     "default": 32
+    },
+    "Mosambik": {
+     "default": 51
+    },
+    "Myanmar": {
+     "default": 23
+    },
+    "Namibia": {
+     "default": 30
+    },
+    "Nepal": {
+     "default": 36
+    },
+    "Neuseeland": {
+     "default": 58
+    },
+    "Nicaragua": {
+     "default": 46
+    },
+    "Niederlande": {
+     "default": 47
+    },
+    "Niger": {
+     "default": 42
+    },
+    "Nigeria": {
+     "default": 46
+    },
+    "Nordmazedonien": {
+     "default": 27
+    },
+    "Norwegen": {
+     "default": 75
+    },
+    "Österreich": {
+     "default": 50
+    },
+    "Oman": {
+     "default": 64
+    },
+    "Pakistan": {
+     "orte": {
+      "Islamabad": 23
+     },
+     "default": 34
+    },
+    "Palau": {
+     "default": 51
+    },
+    "Panama": {
+     "default": 41
+    },
+    "Papua-Neuguinea": {
+     "default": 59
+    },
+    "Paraguay": {
+     "default": 39
+    },
+    "Peru": {
+     "default": 34
+    },
+    "Philippinen": {
+     "default": 41
+    },
+    "Polen": {
+     "orte": {
+      "Breslau": 34,
+      "Warschau": 40
+     },
+     "default": 34
+    },
+    "Portugal": {
+     "default": 32
+    },
+    "Ruanda": {
+     "default": 44
+    },
+    "Rumänien": {
+     "orte": {
+      "Bukarest": 32
+     },
+     "default": 27
+    },
+    "Russische Föderation": {
+     "orte": {
+      "Moskau": 30,
+      "St. Petersburg": 28
+     },
+     "default": 28
+    },
+    "Sambia": {
+     "default": 38
+    },
+    "Samoa": {
+     "default": 39
+    },
+    "San Marino": {
+     "default": 34
+    },
+    "São Tomé - Príncipe": {
+     "default": 36
+    },
+    "Saudi-Arabien": {
+     "orte": {
+      "Djidda": 57,
+      "Riad": 56
+     },
+     "default": 56
+    },
+    "Schweden": {
+     "default": 66
+    },
+    "Schweiz": {
+     "orte": {
+      "Genf": 66
+     },
+     "default": 64
+    },
+    "Senegal": {
+     "default": 42
+    },
+    "Serbien": {
+     "default": 27
+    },
+    "Sierra Leone": {
+     "default": 57
+    },
+    "Simbabwe": {
+     "default": 63
+    },
+    "Singapur": {
+     "default": 71
+    },
+    "Slowakische Republik": {
+     "default": 33
+    },
+    "Slowenien": {
+     "default": 38
+    },
+    "Spanien": {
+     "orte": {
+      "Barcelona": 34,
+      "Kanarische Inseln": 36,
+      "Madrid": 42,
+      "Palma de Mallorca": 44
+     },
+     "default": 34
+    },
+    "Sri Lanka": {
+     "default": 36
+    },
+    "Sudan": {
+     "default": 33
+    },
+    "Südafrika": {
+     "orte": {
+      "Kapstadt": 33,
+      "Johannesburg": 36
+     },
+     "default": 29
+    },
+    "Südsudan": {
+     "default": 51
+    },
+    "Syrien": {
+     "default": 38
+    },
+    "Tadschikistan": {
+     "default": 27
+    },
+    "Taiwan": {
+     "default": 51
+    },
+    "Tansania": {
+     "default": 44
+    },
+    "Thailand": {
+     "default": 36
+    },
+    "Togo": {
+     "default": 39
+    },
+    "Tonga": {
+     "default": 29
+    },
+    "Trinidad und Tobago": {
+     "default": 66
+    },
+    "Tschad": {
+     "default": 42
+    },
+    "Tschechische Republik": {
+     "default": 32
+    },
+    "Türkei": {
+     "orte": {
+      "Ankara": 32,
+      "Izmir": 44
+     },
+     "default": 24
+    },
+    "Tunesien": {
+     "default": 40
+    },
+    "Turkmenistan": {
+     "default": 28
+    },
+    "Uganda": {
+     "default": 41
+    },
+    "Ukraine": {
+     "default": 26
+    },
+    "Ungarn": {
+     "default": 32
+    },
+    "Uruguay": {
+     "default": 40
+    },
+    "Usbekistan": {
+     "default": 34
+    },
+    "Vatikanstaat": {
+     "default": 48
+    },
+    "Venezuela": {
+     "default": 45
+    },
+    "Vereinigte Arabische Emirate": {
+     "default": 65
+    },
+    "USA": {
+     "orte": {
+      "Atlanta": 77,
+      "Boston": 63,
+      "Chicago": 65,
+      "Houston": 62,
+      "Los Angeles": 64,
+      "Miami": 65,
+      "New York City": 66,
+      "San Francisco": 59,
+      "Washington, D.C.": 66
+     },
+     "default": 59
+    },
+    "Vereinigtes Königreich": {
+     "orte": {
+      "London": 66
+     },
+     "default": 52
+    },
+    "Vietnam": {
+     "default": 36
+    },
+    "Weißrussland": {
+     "default": 20
+    },
+    "Zentralafrikanische Republik": {
+     "default": 53
+    },
+    "Zypern": {
+     "default": 42
+    }
+   }
+  },
+  "2026": {
+   "quelle": "BMF-Schreiben vom 05.12.2025 (gültig ab 01.01.2026) - nur einzeln verifizierte Länder",
+   "vollstaendig": false,
+   "saetze": {
+    "USA": {
+     "orte": {
+      "Atlanta": 77,
+      "Boston": 63,
+      "Chicago": 65,
+      "Houston": 62,
+      "Los Angeles": 64,
+      "Miami": 65,
+      "New York City": 66,
+      "San Francisco": 59,
+      "Washington, D.C.": 66
+     },
+     "default": 59
+    },
+    "Schweiz": {
+     "orte": {
+      "Bern": 82,
+      "Genf": 70
+     },
+     "default": 70
+    },
+    "Polen": {
+     "orte": {
+      "Breslau": 34,
+      "Warschau": 40
+     },
+     "default": 34
+    },
+    "Ungarn": {
+     "default": 32
+    },
+    "Spanien": {
+     "orte": {
+      "Barcelona": 34,
+      "Kanarische Inseln": 36,
+      "Madrid": 42,
+      "Palma de Mallorca": 44
+     },
+     "default": 34
+    },
+    "Saudi-Arabien": {
+     "orte": {
+      "Djidda": 57,
+      "Riad": 56
+     },
+     "default": 56
+    },
+    "Taiwan": {
+     "default": 51
+    },
+    "Kanada": {
+     "orte": {
+      "Ottawa": 62,
+      "Toronto": 54,
+      "Vancouver": 63
+     },
+     "default": 54
+    },
+    "Mexiko": {
+     "default": 40
+    }
+   }
+  }
+ }
+}
