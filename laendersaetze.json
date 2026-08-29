@@ -5,614 +5,1286 @@
    "vollstaendig": true,
    "saetze": {
     "Afghanistan": {
-     "default": 30
+     "default": {
+      "tag": 30,
+      "uebernachtung": 95
+     }
     },
     "Ägypten": {
-     "default": 50
+     "default": {
+      "tag": 50,
+      "uebernachtung": 112
+     }
     },
     "Äthiopien": {
-     "default": 44
+     "default": {
+      "tag": 44,
+      "uebernachtung": 159
+     }
     },
     "Äquatorialguinea": {
-     "default": 42
+     "default": {
+      "tag": 42,
+      "uebernachtung": 166
+     }
     },
     "Albanien": {
-     "default": 27
+     "default": {
+      "tag": 27,
+      "uebernachtung": 112
+     }
     },
     "Algerien": {
-     "default": 47
+     "default": {
+      "tag": 47,
+      "uebernachtung": 120
+     }
     },
     "Andorra": {
-     "default": 41
+     "default": {
+      "tag": 41,
+      "uebernachtung": 91
+     }
     },
     "Angola": {
-     "default": 40
+     "default": {
+      "tag": 40,
+      "uebernachtung": 368
+     }
     },
     "Argentinien": {
-     "default": 35
+     "default": {
+      "tag": 35,
+      "uebernachtung": 113
+     }
     },
     "Armenien": {
-     "default": 29
+     "default": {
+      "tag": 29,
+      "uebernachtung": 107
+     }
     },
     "Aserbaidschan": {
-     "default": 44
+     "default": {
+      "tag": 44,
+      "uebernachtung": 88
+     }
     },
     "Australien": {
      "orte": {
-      "Canberra": 74,
-      "Sydney": 57
+      "Canberra": {
+       "tag": 74,
+       "uebernachtung": 186
+      },
+      "Sydney": {
+       "tag": 57,
+       "uebernachtung": 173
+      }
      },
-     "default": 57
+     "default": {
+      "tag": 57,
+      "uebernachtung": 173
+     }
     },
     "Bahrain": {
-     "default": 48
+     "default": {
+      "tag": 48,
+      "uebernachtung": 153
+     }
     },
     "Bangladesch": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 189
+     }
     },
     "Barbados": {
-     "default": 54
+     "default": {
+      "tag": 54,
+      "uebernachtung": 206
+     }
     },
     "Belgien": {
-     "default": 59
+     "default": {
+      "tag": 59,
+      "uebernachtung": 141
+     }
     },
     "Benin": {
-     "default": 40
+     "default": {
+      "tag": 40,
+      "uebernachtung": 168
+     }
     },
     "Bhutan": {
-     "default": 27
+     "default": {
+      "tag": 27,
+      "uebernachtung": 176
+     }
     },
     "Bolivien": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 108
+     }
     },
     "Bosnien und Herzegowina": {
-     "default": 23
+     "default": {
+      "tag": 23,
+      "uebernachtung": 75
+     }
     },
     "Botsuana": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 176
+     }
     },
     "Brasilien": {
      "orte": {
-      "Brasilia": 51,
-      "Rio de Janeiro": 69,
-      "Sao Paulo": 46
+      "Brasilia": {
+       "tag": 51,
+       "uebernachtung": 88
+      },
+      "Rio de Janeiro": {
+       "tag": 69,
+       "uebernachtung": 140
+      },
+      "Sao Paulo": {
+       "tag": 46,
+       "uebernachtung": 151
+      }
      },
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 88
+     }
     },
     "Brunei": {
-     "default": 45
+     "default": {
+      "tag": 45,
+      "uebernachtung": 110
+     }
     },
     "Bulgarien": {
-     "default": 22
+     "default": {
+      "tag": 22,
+      "uebernachtung": 115
+     }
     },
     "Burkina Faso": {
-     "default": 38
+     "default": {
+      "tag": 38,
+      "uebernachtung": 174
+     }
     },
     "Burundi": {
-     "default": 36
+     "default": {
+      "tag": 36,
+      "uebernachtung": 138
+     }
     },
     "Chile": {
-     "default": 44
+     "default": {
+      "tag": 44,
+      "uebernachtung": 154
+     }
     },
     "China": {
      "orte": {
-      "Chengdu": 41,
-      "Hongkong": 71,
-      "Kanton": 36,
-      "Peking": 30,
-      "Shanghai": 58
+      "Chengdu": {
+       "tag": 41,
+       "uebernachtung": 131
+      },
+      "Hongkong": {
+       "tag": 71,
+       "uebernachtung": 169
+      },
+      "Kanton": {
+       "tag": 36,
+       "uebernachtung": 150
+      },
+      "Peking": {
+       "tag": 30,
+       "uebernachtung": 185
+      },
+      "Shanghai": {
+       "tag": 58,
+       "uebernachtung": 217
+      }
      },
-     "default": 48
+     "default": {
+      "tag": 48,
+      "uebernachtung": 112
+     }
     },
     "Costa Rica": {
-     "default": 60
+     "default": {
+      "tag": 60,
+      "uebernachtung": 127
+     }
     },
     "Côte d'Ivoire": {
-     "default": 59
+     "default": {
+      "tag": 59,
+      "uebernachtung": 166
+     }
     },
     "Dänemark": {
-     "default": 75
+     "default": {
+      "tag": 75,
+      "uebernachtung": 183
+     }
     },
     "Dominikanische Republik": {
-     "default": 50
+     "default": {
+      "tag": 50,
+      "uebernachtung": 167
+     }
     },
     "Dschibuti": {
-     "default": 77
+     "default": {
+      "tag": 77,
+      "uebernachtung": 255
+     }
     },
     "Ecuador": {
-     "default": 27
+     "default": {
+      "tag": 27,
+      "uebernachtung": 103
+     }
     },
     "El Salvador": {
-     "default": 65
+     "default": {
+      "tag": 65,
+      "uebernachtung": 161
+     }
     },
     "Eritrea": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 78
+     }
     },
     "Estland": {
-     "default": 29
+     "default": {
+      "tag": 29,
+      "uebernachtung": 85
+     }
     },
     "Fidschi": {
-     "default": 32
+     "default": {
+      "tag": 32,
+      "uebernachtung": 183
+     }
     },
     "Finnland": {
-     "default": 54
+     "default": {
+      "tag": 54,
+      "uebernachtung": 171
+     }
     },
     "Frankreich": {
      "orte": {
-      "Paris": 58
+      "Paris": {
+       "tag": 58,
+       "uebernachtung": 159
+      }
      },
-     "default": 53
+     "default": {
+      "tag": 53,
+      "uebernachtung": 105
+     }
     },
     "Gabun": {
-     "default": 64
+     "default": {
+      "tag": 64,
+      "uebernachtung": 263
+     }
     },
     "Gambia": {
-     "default": 40
+     "default": {
+      "tag": 40,
+      "uebernachtung": 161
+     }
     },
     "Georgien": {
-     "default": 45
+     "default": {
+      "tag": 45,
+      "uebernachtung": 87
+     }
     },
     "Ghana": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 203
+     }
     },
     "Griechenland": {
      "orte": {
-      "Athen": 40
+      "Athen": {
+       "tag": 40,
+       "uebernachtung": 139
+      }
      },
-     "default": 36
+     "default": {
+      "tag": 36,
+      "uebernachtung": 150
+     }
     },
     "Guatemala": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 124
+     }
     },
     "Guinea": {
-     "default": 59
+     "default": {
+      "tag": 59,
+      "uebernachtung": 140
+     }
     },
     "Guinea-Bissau": {
-     "default": 32
+     "default": {
+      "tag": 32,
+      "uebernachtung": 113
+     }
     },
     "Haiti": {
-     "default": 58
+     "default": {
+      "tag": 58,
+      "uebernachtung": 130
+     }
     },
     "Honduras": {
-     "default": 57
+     "default": {
+      "tag": 57,
+      "uebernachtung": 198
+     }
     },
     "Indien": {
      "orte": {
-      "Bangalore": 42,
-      "Chennai": 22,
-      "Kalkutta": 32,
-      "Mumbai": 53,
-      "Neu Delhi": 46
+      "Bangalore": {
+       "tag": 42,
+       "uebernachtung": 155
+      },
+      "Chennai": {
+       "tag": 22,
+       "uebernachtung": 80
+      },
+      "Kalkutta": {
+       "tag": 32,
+       "uebernachtung": 167
+      },
+      "Mumbai": {
+       "tag": 53,
+       "uebernachtung": 218
+      },
+      "Neu Delhi": {
+       "tag": 46,
+       "uebernachtung": 211
+      }
      },
-     "default": 22
+     "default": {
+      "tag": 22,
+      "uebernachtung": 80
+     }
     },
     "Indonesien": {
-     "default": 45
+     "default": {
+      "tag": 45,
+      "uebernachtung": 179
+     }
     },
     "Iran": {
-     "default": 33
+     "default": {
+      "tag": 33,
+      "uebernachtung": 196
+     }
     },
     "Irland": {
-     "default": 58
+     "default": {
+      "tag": 58,
+      "uebernachtung": 129
+     }
     },
     "Island": {
-     "default": 62
+     "default": {
+      "tag": 62,
+      "uebernachtung": 187
+     }
     },
     "Israel": {
-     "default": 66
+     "default": {
+      "tag": 66,
+      "uebernachtung": 190
+     }
     },
     "Italien": {
      "orte": {
-      "Mailand": 42,
-      "Rom": 48
+      "Mailand": {
+       "tag": 42,
+       "uebernachtung": 191
+      },
+      "Rom": {
+       "tag": 48,
+       "uebernachtung": 150
+      }
      },
-     "default": 42
+     "default": {
+      "tag": 42,
+      "uebernachtung": 150
+     }
     },
     "Jamaika": {
-     "default": 39
+     "default": {
+      "tag": 39,
+      "uebernachtung": 171
+     }
     },
     "Japan": {
      "orte": {
-      "Tokio": 50,
-      "Osaka": 33
+      "Tokio": {
+       "tag": 50,
+       "uebernachtung": 285
+      },
+      "Osaka": {
+       "tag": 33,
+       "uebernachtung": 141
+      }
      },
-     "default": 33
+     "default": {
+      "tag": 33,
+      "uebernachtung": 141
+     }
     },
     "Jemen": {
-     "default": 24
+     "default": {
+      "tag": 24,
+      "uebernachtung": 95
+     }
     },
     "Jordanien": {
-     "default": 57
+     "default": {
+      "tag": 57,
+      "uebernachtung": 134
+     }
     },
     "Kambodscha": {
-     "default": 42
+     "default": {
+      "tag": 42,
+      "uebernachtung": 108
+     }
     },
     "Kamerun": {
-     "default": 56
+     "default": {
+      "tag": 56,
+      "uebernachtung": 275
+     }
     },
     "Kanada": {
      "orte": {
-      "Ottawa": 62,
-      "Toronto": 54,
-      "Vancouver": 63
+      "Ottawa": {
+       "tag": 62,
+       "uebernachtung": 214
+      },
+      "Toronto": {
+       "tag": 54,
+       "uebernachtung": 392
+      },
+      "Vancouver": {
+       "tag": 63,
+       "uebernachtung": 304
+      }
      },
-     "default": 54
+     "default": {
+      "tag": 54,
+      "uebernachtung": 214
+     }
     },
     "Kap Verde": {
-     "default": 38
+     "default": {
+      "tag": 38,
+      "uebernachtung": 90
+     }
     },
     "Kasachstan": {
-     "default": 33
+     "default": {
+      "tag": 33,
+      "uebernachtung": 108
+     }
     },
     "Katar": {
-     "default": 56
+     "default": {
+      "tag": 56,
+      "uebernachtung": 149
+     }
     },
     "Kenia": {
-     "default": 51
+     "default": {
+      "tag": 51,
+      "uebernachtung": 219
+     }
     },
     "Kirgisistan": {
-     "default": 27
+     "default": {
+      "tag": 27,
+      "uebernachtung": 74
+     }
     },
     "Kolumbien": {
-     "default": 34
+     "default": {
+      "tag": 34,
+      "uebernachtung": 123
+     }
     },
     "Kongo, Republik": {
-     "default": 62
+     "default": {
+      "tag": 62,
+      "uebernachtung": 215
+     }
     },
     "Kongo, Demokratische Republik": {
-     "default": 65
+     "default": {
+      "tag": 65,
+      "uebernachtung": 337
+     }
     },
     "Korea, Demokratische Volksrepublik": {
-     "default": 28
+     "default": {
+      "tag": 28,
+      "uebernachtung": 92
+     }
     },
     "Korea, Republik": {
-     "default": 48
+     "default": {
+      "tag": 48,
+      "uebernachtung": 108
+     }
     },
     "Kosovo": {
-     "default": 24
+     "default": {
+      "tag": 24,
+      "uebernachtung": 71
+     }
     },
     "Kroatien": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 191
+     }
     },
     "Kuba": {
-     "default": 51
+     "default": {
+      "tag": 51,
+      "uebernachtung": 170
+     }
     },
     "Kuwait": {
-     "default": 56
+     "default": {
+      "tag": 56,
+      "uebernachtung": 241
+     }
     },
     "Laos": {
-     "default": 35
+     "default": {
+      "tag": 35,
+      "uebernachtung": 71
+     }
     },
     "Lesotho": {
-     "default": 28
+     "default": {
+      "tag": 28,
+      "uebernachtung": 104
+     }
     },
     "Lettland": {
-     "default": 35
+     "default": {
+      "tag": 35,
+      "uebernachtung": 76
+     }
     },
     "Libyen": {
-     "default": 63
+     "default": {
+      "tag": 63,
+      "uebernachtung": 135
+     }
     },
     "Libanon": {
-     "default": 69
+     "default": {
+      "tag": 69,
+      "uebernachtung": 146
+     }
     },
     "Liberia": {
-     "default": 65
+     "default": {
+      "tag": 65,
+      "uebernachtung": 173
+     }
     },
     "Liechtenstein": {
-     "default": 56
+     "default": {
+      "tag": 56,
+      "uebernachtung": 190
+     }
     },
     "Litauen": {
-     "default": 26
+     "default": {
+      "tag": 26,
+      "uebernachtung": 109
+     }
     },
     "Luxemburg": {
-     "default": 63
+     "default": {
+      "tag": 63,
+      "uebernachtung": 139
+     }
     },
     "Madagaskar": {
-     "default": 33
+     "default": {
+      "tag": 33,
+      "uebernachtung": 116
+     }
     },
     "Malawi": {
-     "default": 41
+     "default": {
+      "tag": 41,
+      "uebernachtung": 109
+     }
     },
     "Malaysia": {
-     "default": 36
+     "default": {
+      "tag": 36,
+      "uebernachtung": 86
+     }
     },
     "Malediven": {
-     "default": 70
+     "default": {
+      "tag": 70,
+      "uebernachtung": 200
+     }
     },
     "Mali": {
-     "default": 38
+     "default": {
+      "tag": 38,
+      "uebernachtung": 120
+     }
     },
     "Malta": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 114
+     }
     },
     "Marokko": {
-     "default": 41
+     "default": {
+      "tag": 41,
+      "uebernachtung": 87
+     }
     },
     "Marshall Inseln": {
-     "default": 63
+     "default": {
+      "tag": 63,
+      "uebernachtung": 102
+     }
     },
     "Mauretanien": {
-     "default": 35
+     "default": {
+      "tag": 35,
+      "uebernachtung": 86
+     }
     },
     "Mauritius": {
-     "default": 44
+     "default": {
+      "tag": 44,
+      "uebernachtung": 172
+     }
     },
     "Mexiko": {
-     "default": 48
+     "default": {
+      "tag": 48,
+      "uebernachtung": 177
+     }
     },
     "Moldau, Republik": {
-     "default": 26
+     "default": {
+      "tag": 26,
+      "uebernachtung": 73
+     }
     },
     "Monaco": {
-     "default": 52
+     "default": {
+      "tag": 52,
+      "uebernachtung": 187
+     }
     },
     "Mongolei": {
-     "default": 23
+     "default": {
+      "tag": 23,
+      "uebernachtung": 92
+     }
     },
     "Montenegro": {
-     "default": 32
+     "default": {
+      "tag": 32,
+      "uebernachtung": 85
+     }
     },
     "Mosambik": {
-     "default": 51
+     "default": {
+      "tag": 51,
+      "uebernachtung": 208
+     }
     },
     "Myanmar": {
-     "default": 23
+     "default": {
+      "tag": 23,
+      "uebernachtung": 103
+     }
     },
     "Namibia": {
-     "default": 30
+     "default": {
+      "tag": 30,
+      "uebernachtung": 112
+     }
     },
     "Nepal": {
-     "default": 36
+     "default": {
+      "tag": 36,
+      "uebernachtung": 126
+     }
     },
     "Neuseeland": {
-     "default": 58
+     "default": {
+      "tag": 58,
+      "uebernachtung": 148
+     }
     },
     "Nicaragua": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 105
+     }
     },
     "Niederlande": {
-     "default": 47
+     "default": {
+      "tag": 47,
+      "uebernachtung": 122
+     }
     },
     "Niger": {
-     "default": 42
+     "default": {
+      "tag": 42,
+      "uebernachtung": 131
+     }
     },
     "Nigeria": {
-     "default": 46
+     "default": {
+      "tag": 46,
+      "uebernachtung": 182
+     }
     },
     "Nordmazedonien": {
-     "default": 27
+     "default": {
+      "tag": 27,
+      "uebernachtung": 89
+     }
     },
     "Norwegen": {
-     "default": 75
+     "default": {
+      "tag": 75,
+      "uebernachtung": 139
+     }
     },
     "Österreich": {
-     "default": 50
+     "default": {
+      "tag": 50,
+      "uebernachtung": 117
+     }
     },
     "Oman": {
-     "default": 64
+     "default": {
+      "tag": 64,
+      "uebernachtung": 141
+     }
     },
     "Pakistan": {
      "orte": {
-      "Islamabad": 23
+      "Islamabad": {
+       "tag": 23,
+       "uebernachtung": 238
+      }
      },
-     "default": 34
+     "default": {
+      "tag": 34,
+      "uebernachtung": 122
+     }
     },
     "Palau": {
-     "default": 51
+     "default": {
+      "tag": 51,
+      "uebernachtung": 193
+     }
     },
     "Panama": {
-     "default": 41
+     "default": {
+      "tag": 41,
+      "uebernachtung": 82
+     }
     },
     "Papua-Neuguinea": {
-     "default": 59
+     "default": {
+      "tag": 59,
+      "uebernachtung": 159
+     }
     },
     "Paraguay": {
-     "default": 39
+     "default": {
+      "tag": 39,
+      "uebernachtung": 124
+     }
     },
     "Peru": {
-     "default": 34
+     "default": {
+      "tag": 34,
+      "uebernachtung": 143
+     }
     },
     "Philippinen": {
-     "default": 41
+     "default": {
+      "tag": 41,
+      "uebernachtung": 140
+     }
     },
     "Polen": {
      "orte": {
-      "Breslau": 34,
-      "Warschau": 40
+      "Breslau": {
+       "tag": 34,
+       "uebernachtung": 124
+      },
+      "Warschau": {
+       "tag": 40,
+       "uebernachtung": 143
+      }
      },
-     "default": 34
+     "default": {
+      "tag": 34,
+      "uebernachtung": 124
+     }
     },
     "Portugal": {
-     "default": 32
+     "default": {
+      "tag": 32,
+      "uebernachtung": 111
+     }
     },
     "Ruanda": {
-     "default": 44
+     "default": {
+      "tag": 44,
+      "uebernachtung": 117
+     }
     },
     "Rumänien": {
      "orte": {
-      "Bukarest": 32
+      "Bukarest": {
+       "tag": 32,
+       "uebernachtung": 92
+      }
      },
-     "default": 27
+     "default": {
+      "tag": 27,
+      "uebernachtung": 89
+     }
     },
     "Russische Föderation": {
      "orte": {
-      "Moskau": 30,
-      "St. Petersburg": 28
+      "Moskau": {
+       "tag": 30,
+       "uebernachtung": 235
+      },
+      "St. Petersburg": {
+       "tag": 28,
+       "uebernachtung": 133
+      }
      },
-     "default": 28
+     "default": {
+      "tag": 28,
+      "uebernachtung": 133
+     }
     },
     "Sambia": {
-     "default": 38
+     "default": {
+      "tag": 38,
+      "uebernachtung": 105
+     }
     },
     "Samoa": {
-     "default": 39
+     "default": {
+      "tag": 39,
+      "uebernachtung": 105
+     }
     },
     "San Marino": {
-     "default": 34
+     "default": {
+      "tag": 34,
+      "uebernachtung": 79
+     }
     },
     "São Tomé - Príncipe": {
-     "default": 36
+     "default": {
+      "tag": 36,
+      "uebernachtung": 147
+     }
     },
     "Saudi-Arabien": {
      "orte": {
-      "Djidda": 57,
-      "Riad": 56
+      "Djidda": {
+       "tag": 57,
+       "uebernachtung": 181
+      },
+      "Riad": {
+       "tag": 56,
+       "uebernachtung": 186
+      }
      },
-     "default": 56
+     "default": {
+      "tag": 56,
+      "uebernachtung": 181
+     }
     },
     "Schweden": {
-     "default": 66
+     "default": {
+      "tag": 66,
+      "uebernachtung": 140
+     }
     },
     "Schweiz": {
      "orte": {
-      "Genf": 66
+      "Genf": {
+       "tag": 66,
+       "uebernachtung": 186
+      }
      },
-     "default": 64
+     "default": {
+      "tag": 64,
+      "uebernachtung": 180
+     }
     },
     "Senegal": {
-     "default": 42
+     "default": {
+      "tag": 42,
+      "uebernachtung": 190
+     }
     },
     "Serbien": {
-     "default": 27
+     "default": {
+      "tag": 27,
+      "uebernachtung": 97
+     }
     },
     "Sierra Leone": {
-     "default": 57
+     "default": {
+      "tag": 57,
+      "uebernachtung": 145
+     }
     },
     "Simbabwe": {
-     "default": 63
+     "default": {
+      "tag": 63,
+      "uebernachtung": 198
+     }
     },
     "Singapur": {
-     "default": 71
+     "default": {
+      "tag": 71,
+      "uebernachtung": 277
+     }
     },
     "Slowakische Republik": {
-     "default": 33
+     "default": {
+      "tag": 33,
+      "uebernachtung": 121
+     }
     },
     "Slowenien": {
-     "default": 38
+     "default": {
+      "tag": 38,
+      "uebernachtung": 126
+     }
     },
     "Spanien": {
      "orte": {
-      "Barcelona": 34,
-      "Kanarische Inseln": 36,
-      "Madrid": 42,
-      "Palma de Mallorca": 44
+      "Barcelona": {
+       "tag": 34,
+       "uebernachtung": 144
+      },
+      "Kanarische Inseln": {
+       "tag": 36,
+       "uebernachtung": 103
+      },
+      "Madrid": {
+       "tag": 42,
+       "uebernachtung": 131
+      },
+      "Palma de Mallorca": {
+       "tag": 44,
+       "uebernachtung": 142
+      }
      },
-     "default": 34
+     "default": {
+      "tag": 34,
+      "uebernachtung": 103
+     }
     },
     "Sri Lanka": {
-     "default": 36
+     "default": {
+      "tag": 36,
+      "uebernachtung": 112
+     }
     },
     "Sudan": {
-     "default": 33
+     "default": {
+      "tag": 33,
+      "uebernachtung": 195
+     }
     },
     "Südafrika": {
      "orte": {
-      "Kapstadt": 33,
-      "Johannesburg": 36
+      "Kapstadt": {
+       "tag": 33,
+       "uebernachtung": 130
+      },
+      "Johannesburg": {
+       "tag": 36,
+       "uebernachtung": 129
+      }
      },
-     "default": 29
+     "default": {
+      "tag": 29,
+      "uebernachtung": 109
+     }
     },
     "Südsudan": {
-     "default": 51
+     "default": {
+      "tag": 51,
+      "uebernachtung": 159
+     }
     },
     "Syrien": {
-     "default": 38
+     "default": {
+      "tag": 38,
+      "uebernachtung": 140
+     }
     },
     "Tadschikistan": {
-     "default": 27
+     "default": {
+      "tag": 27,
+      "uebernachtung": 85
+     }
     },
     "Taiwan": {
-     "default": 51
+     "default": {
+      "tag": 51,
+      "uebernachtung": 174
+     }
     },
     "Tansania": {
-     "default": 44
+     "default": {
+      "tag": 44,
+      "uebernachtung": 97
+     }
     },
     "Thailand": {
-     "default": 36
+     "default": {
+      "tag": 36,
+      "uebernachtung": 114
+     }
     },
     "Togo": {
-     "default": 39
+     "default": {
+      "tag": 39,
+      "uebernachtung": 118
+     }
     },
     "Tonga": {
-     "default": 29
+     "default": {
+      "tag": 29,
+      "uebernachtung": 102
+     }
     },
     "Trinidad und Tobago": {
-     "default": 66
+     "default": {
+      "tag": 66,
+      "uebernachtung": 203
+     }
     },
     "Tschad": {
-     "default": 42
+     "default": {
+      "tag": 42,
+      "uebernachtung": 155
+     }
     },
     "Tschechische Republik": {
-     "default": 32
+     "default": {
+      "tag": 32,
+      "uebernachtung": 77
+     }
     },
     "Türkei": {
      "orte": {
-      "Ankara": 32,
-      "Izmir": 44
+      "Ankara": {
+       "tag": 32,
+       "uebernachtung": 110
+      },
+      "Izmir": {
+       "tag": 44,
+       "uebernachtung": 120
+      }
      },
-     "default": 24
+     "default": {
+      "tag": 24,
+      "uebernachtung": 107
+     }
     },
     "Tunesien": {
-     "default": 40
+     "default": {
+      "tag": 40,
+      "uebernachtung": 144
+     }
     },
     "Turkmenistan": {
-     "default": 28
+     "default": {
+      "tag": 28,
+      "uebernachtung": 135
+     }
     },
     "Uganda": {
-     "default": 41
+     "default": {
+      "tag": 41,
+      "uebernachtung": 143
+     }
     },
     "Ukraine": {
-     "default": 26
+     "default": {
+      "tag": 26,
+      "uebernachtung": 98
+     }
     },
     "Ungarn": {
-     "default": 32
+     "default": {
+      "tag": 32,
+      "uebernachtung": 85
+     }
     },
     "Uruguay": {
-     "default": 40
+     "default": {
+      "tag": 40,
+      "uebernachtung": 113
+     }
     },
     "Usbekistan": {
-     "default": 34
+     "default": {
+      "tag": 34,
+      "uebernachtung": 104
+     }
     },
     "Vatikanstaat": {
-     "default": 48
+     "default": {
+      "tag": 48,
+      "uebernachtung": 150
+     }
     },
     "Venezuela": {
-     "default": 45
+     "default": {
+      "tag": 45,
+      "uebernachtung": 127
+     }
     },
     "Vereinigte Arabische Emirate": {
-     "default": 65
+     "default": {
+      "tag": 65,
+      "uebernachtung": 156
+     }
     },
     "USA": {
      "orte": {
-      "Atlanta": 77,
-      "Boston": 63,
-      "Chicago": 65,
-      "Houston": 62,
-      "Los Angeles": 64,
-      "Miami": 65,
-      "New York City": 66,
-      "San Francisco": 59,
-      "Washington, D.C.": 66
+      "Atlanta": {
+       "tag": 77,
+       "uebernachtung": 182
+      },
+      "Boston": {
+       "tag": 63,
+       "uebernachtung": 333
+      },
+      "Chicago": {
+       "tag": 65,
+       "uebernachtung": 233
+      },
+      "Houston": {
+       "tag": 62,
+       "uebernachtung": 204
+      },
+      "Los Angeles": {
+       "tag": 64,
+       "uebernachtung": 262
+      },
+      "Miami": {
+       "tag": 65,
+       "uebernachtung": 256
+      },
+      "New York City": {
+       "tag": 66,
+       "uebernachtung": 308
+      },
+      "San Francisco": {
+       "tag": 59,
+       "uebernachtung": 327
+      },
+      "Washington, D.C.": {
+       "tag": 66,
+       "uebernachtung": 203
+      }
      },
-     "default": 59
+     "default": {
+      "tag": 59,
+      "uebernachtung": 182
+     }
     },
     "Vereinigtes Königreich": {
      "orte": {
-      "London": 66
+      "London": {
+       "tag": 66,
+       "uebernachtung": 163
+      }
      },
-     "default": 52
+     "default": {
+      "tag": 52,
+      "uebernachtung": 99
+     }
     },
     "Vietnam": {
-     "default": 36
+     "default": {
+      "tag": 36,
+      "uebernachtung": 111
+     }
     },
     "Weißrussland": {
-     "default": 20
+     "default": {
+      "tag": 20,
+      "uebernachtung": 98
+     }
     },
     "Zentralafrikanische Republik": {
-     "default": 53
+     "default": {
+      "tag": 53,
+      "uebernachtung": 210
+     }
     },
     "Zypern": {
-     "default": 42
+     "default": {
+      "tag": 42,
+      "uebernachtung": 125
+     }
     }
    }
   },
@@ -622,64 +1294,156 @@
    "saetze": {
     "USA": {
      "orte": {
-      "Atlanta": 77,
-      "Boston": 63,
-      "Chicago": 65,
-      "Houston": 62,
-      "Los Angeles": 64,
-      "Miami": 65,
-      "New York City": 66,
-      "San Francisco": 59,
-      "Washington, D.C.": 66
+      "Atlanta": {
+       "tag": 77,
+       "uebernachtung": 182
+      },
+      "Boston": {
+       "tag": 63,
+       "uebernachtung": 333
+      },
+      "Chicago": {
+       "tag": 65,
+       "uebernachtung": 233
+      },
+      "Houston": {
+       "tag": 62,
+       "uebernachtung": 204
+      },
+      "Los Angeles": {
+       "tag": 64,
+       "uebernachtung": 262
+      },
+      "Miami": {
+       "tag": 65,
+       "uebernachtung": 256
+      },
+      "New York City": {
+       "tag": 66,
+       "uebernachtung": 308
+      },
+      "San Francisco": {
+       "tag": 59,
+       "uebernachtung": 327
+      },
+      "Washington, D.C.": {
+       "tag": 66,
+       "uebernachtung": 203
+      }
      },
-     "default": 59
+     "default": {
+      "tag": 59,
+      "uebernachtung": 182
+     }
     },
     "Schweiz": {
      "orte": {
-      "Bern": 82,
-      "Genf": 70
+      "Bern": {
+       "tag": 82,
+       "uebernachtung": 195
+      },
+      "Genf": {
+       "tag": 70,
+       "uebernachtung": 197
+      }
      },
-     "default": 70
+     "default": {
+      "tag": 70,
+      "uebernachtung": 195
+     }
     },
     "Polen": {
      "orte": {
-      "Breslau": 34,
-      "Warschau": 40
+      "Breslau": {
+       "tag": 34,
+       "uebernachtung": 124
+      },
+      "Warschau": {
+       "tag": 40,
+       "uebernachtung": 143
+      }
      },
-     "default": 34
+     "default": {
+      "tag": 34,
+      "uebernachtung": 124
+     }
     },
     "Ungarn": {
-     "default": 32
+     "default": {
+      "tag": 32,
+      "uebernachtung": 85
+     }
     },
     "Spanien": {
      "orte": {
-      "Barcelona": 34,
-      "Kanarische Inseln": 36,
-      "Madrid": 42,
-      "Palma de Mallorca": 44
+      "Barcelona": {
+       "tag": 34,
+       "uebernachtung": 144
+      },
+      "Kanarische Inseln": {
+       "tag": 36,
+       "uebernachtung": 103
+      },
+      "Madrid": {
+       "tag": 42,
+       "uebernachtung": 131
+      },
+      "Palma de Mallorca": {
+       "tag": 44,
+       "uebernachtung": 142
+      }
      },
-     "default": 34
+     "default": {
+      "tag": 34,
+      "uebernachtung": 103
+     }
     },
     "Saudi-Arabien": {
      "orte": {
-      "Djidda": 57,
-      "Riad": 56
+      "Djidda": {
+       "tag": 57,
+       "uebernachtung": 181
+      },
+      "Riad": {
+       "tag": 56,
+       "uebernachtung": 186
+      }
      },
-     "default": 56
+     "default": {
+      "tag": 56,
+      "uebernachtung": 181
+     }
     },
     "Taiwan": {
-     "default": 51
+     "default": {
+      "tag": 51,
+      "uebernachtung": 174
+     }
     },
     "Kanada": {
      "orte": {
-      "Ottawa": 62,
-      "Toronto": 54,
-      "Vancouver": 63
+      "Ottawa": {
+       "tag": 62,
+       "uebernachtung": 214
+      },
+      "Toronto": {
+       "tag": 54,
+       "uebernachtung": 392
+      },
+      "Vancouver": {
+       "tag": 63,
+       "uebernachtung": 304
+      }
      },
-     "default": 54
+     "default": {
+      "tag": 54,
+      "uebernachtung": 214
+     }
     },
     "Mexiko": {
-     "default": 40
+     "default": {
+      "tag": 40
+     }
     }
    }
   }

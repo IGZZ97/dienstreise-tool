@@ -234,6 +234,18 @@ button{ cursor:pointer; }
   background:var(--bg); padding:2px 6px; border-radius:4px; font-weight:600; color:var(--steel);
 }
 
+.sync-binid-chip{
+  font-size:11px; color:var(--ink-faint); background:var(--bg); padding:2px 8px; border-radius:10px;
+  font-family:'IBM Plex Mono', monospace; cursor:default;
+}
+
+.binid-warning{
+  background:var(--orange-soft); border:1px solid var(--orange); border-radius:8px;
+  padding:10px 12px; margin-top:10px; font-size:12.5px; color:#8a3c08; line-height:1.5;
+}
+
+.binid-copy-row{ display:flex; align-items:center; gap:10px; margin-top:8px; flex-wrap:wrap; }
+
 .panel-hint{ font-size:12px; color:var(--ink-soft); line-height:1.5; margin:8px 0 0; }
 
 /* ---------- forms / panels ---------- */
@@ -2249,10 +2261,13 @@ function renderSyncBar() {
     statusText = 'Verbunden – noch nicht synchronisiert';
   }
 
+  const binIdShort = cfg && cfg.binId ? `<span class="sync-binid-chip" title="Bin-ID: ${esc(cfg.binId)} – muss auf allen Geräten identisch sein">🔑 …${esc(cfg.binId.slice(-6))}</span>` : '';
+
   return `
     <div class="sync-bar no-print">
       <button class="${btnClass} btn-sm" data-action="do-sync" ${running ? 'disabled' : ''}>${btnLabel}</button>
       <span class="sync-status-text ${ui.syncStatus === 'error' ? 'err' : ''}">${statusText}</span>
+      ${binIdShort}
       <div class="toolbar-spacer"></div>
       ${cfg ? `<button class="link-btn" data-action="toggle-sync-settings">Verbindung</button>` : ''}
     </div>
@@ -2266,8 +2281,7 @@ function renderSyncSettingsPanel(cfg) {
       <div class="panel-title">Cloud-Sync einrichten</div>
       <p class="panel-hint">
         Kostenloses eigenes Konto auf <span class="mono">jsonbin.io</span> anlegen, den "X-Master-Key" aus dem
-        Dashboard hier eintragen. Auf einem zweiten Gerät/Browser denselben Master-Key <b>und</b> dieselbe Bin-ID
-        eintragen, damit beide auf denselben Datensatz zugreifen. Dein Konto, deine Daten – niemand sonst hat Zugriff.
+        Dashboard hier eintragen. Dein Konto, deine Daten – niemand sonst hat Zugriff.
       </p>
       <div class="form-grid">
         <label class="field field-wide"><span class="field-label">Master-Key (jsonbin.io) *</span>
@@ -2277,7 +2291,14 @@ function renderSyncSettingsPanel(cfg) {
           <input type="text" name="binId" placeholder="wird beim ersten Sync automatisch erzeugt" value="${esc(cfg && cfg.binId ? cfg.binId : '')}" autocomplete="off">
         </label>
       </div>
-      ${cfg && cfg.binId ? `<p class="panel-hint">Diese Bin-ID auf dem anderen Gerät eintragen: <span class="mono bin-id-display">${esc(cfg.binId)}</span></p>` : ''}
+      ${cfg && cfg.binId ? `
+      <div class="binid-warning">
+        <b>⚠️ Wichtig für weitere Geräte:</b> Nur derselbe Master-Key reicht <b>nicht</b> – ein Master-Key kann mehrere Speicherplätze verwalten. Auf jedem weiteren Gerät muss zusätzlich <b>exakt diese Bin-ID</b> eingetragen werden, sonst legt das Gerät seinen eigenen, leeren Speicherplatz an.
+        <div class="binid-copy-row">
+          <span class="mono bin-id-display">${esc(cfg.binId)}</span>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="copy-bin-id" data-value="${esc(cfg.binId)}">📋 Kopieren</button>
+        </div>
+      </div>` : ''}
       <div class="form-actions">
         <button type="submit" class="btn btn-primary">Speichern</button>
         <button type="button" class="btn btn-ghost" data-action="cancel-sync-settings">Abbrechen</button>
@@ -2863,6 +2884,19 @@ function onClick(e) {
     case 'do-sync':
       doSync();
       break;
+    case 'copy-bin-id': {
+      const value = target.getAttribute('data-value') || '';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(value).then(() => {
+          showInfo('Kopiert', 'Bin-ID wurde in die Zwischenablage kopiert.');
+        }).catch(() => {
+          showError('Kopieren fehlgeschlagen', 'Bitte die Bin-ID manuell markieren und kopieren.');
+        });
+      } else {
+        showError('Kopieren nicht verfügbar', 'Bitte die Bin-ID manuell markieren und kopieren.');
+      }
+      break;
+    }
     case 'toggle-sync-settings':
       ui.showSyncSettings = !ui.showSyncSettings;
       render();
@@ -3079,10 +3113,18 @@ function onSubmit(e) {
     const binId = (fd.get('binId') || '').toString().trim();
     if (!apiKey) { showError('Angaben fehlen', 'Bitte den Master-Key eintragen.'); return; }
     const existing = getSyncConfig();
+    const isFirstTimeSetup = !binId && (!existing || !existing.binId);
     setSyncConfig({ apiKey, binId: binId || (existing ? existing.binId : ''), lastSyncedAt: existing ? existing.lastSyncedAt : 0 });
     ui.showSyncSettings = false;
     render();
-    doSync();
+    doSync().then(() => {
+      if (isFirstTimeSetup) {
+        // Neue Bin-ID wurde gerade erzeugt - Panel automatisch wieder öffnen, damit sie sofort sichtbar
+        // und kopierbar ist, statt sie erst über "Verbindung" erneut suchen zu müssen.
+        ui.showSyncSettings = true;
+        render();
+      }
+    });
   }
 }
 
