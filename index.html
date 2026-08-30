@@ -1264,6 +1264,14 @@ function closeAllCombos() {
   document.querySelectorAll('.combo-wrap.combo-open').forEach(closeCombo);
 }
 
+function selectComboOption(optionEl) {
+  const wrap = optionEl.closest('.combo-wrap');
+  const input = wrap.querySelector('.combo-input');
+  input.value = optionEl.getAttribute('data-value');
+  closeCombo(wrap);
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
 /* ----------------------- weekday / weekend / feiertage ----------------------- */
 
 const WEEKDAY_ABBR = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
@@ -2744,16 +2752,6 @@ function render() {
 /* ----------------------- event handling ----------------------- */
 
 function onClick(e) {
-  const comboOption = e.target.closest('.combo-option');
-  if (comboOption) {
-    const wrap = comboOption.closest('.combo-wrap');
-    const input = wrap.querySelector('.combo-input');
-    input.value = comboOption.getAttribute('data-value');
-    closeCombo(wrap);
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-    return;
-  }
-
   const target = e.target.closest('[data-action]');
   if (!target) return;
   const action = target.getAttribute('data-action');
@@ -3339,6 +3337,14 @@ document.addEventListener('DOMContentLoaded', () => {
   app.addEventListener('change', onChange);
   app.addEventListener('input', onInput);
   app.addEventListener('focusin', onFocusIn);
+  app.addEventListener('pointerdown', (e) => {
+    const optionEl = e.target.closest('.combo-option');
+    if (optionEl) {
+      e.preventDefault(); // verhindert, dass das Eingabefeld vorher den Fokus verliert (blur) und
+                           // das Dropdown dadurch schon zuklappt, bevor die Auswahl greift - v.a. auf Touch-Geräten.
+      selectComboOption(optionEl);
+    }
+  });
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.combo-wrap')) closeAllCombos();
   });
