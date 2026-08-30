@@ -1193,6 +1193,15 @@ function allKnownLaender() {
   return [...names].sort((a, b) => a.localeCompare(b, 'de'));
 }
 
+const DEUTSCHLAND_ORTE = [
+  'Berlin', 'Hamburg', 'München', 'Köln', 'Frankfurt am Main', 'Stuttgart', 'Düsseldorf',
+  'Leipzig', 'Dortmund', 'Essen', 'Bremen', 'Dresden', 'Hannover', 'Nürnberg', 'Duisburg',
+  'Bochum', 'Wuppertal', 'Bielefeld', 'Bonn', 'Münster', 'Mannheim', 'Karlsruhe', 'Augsburg',
+  'Wiesbaden', 'Mönchengladbach', 'Gelsenkirchen', 'Braunschweig', 'Kiel', 'Aachen', 'Halle (Saale)',
+  'Magdeburg', 'Freiburg im Breisgau', 'Krefeld', 'Lübeck', 'Mainz', 'Erfurt', 'Oberhausen',
+  'Rostock', 'Kassel', 'Hagen', 'Saarbrücken', 'Potsdam', 'Ludwigshafen am Rhein', 'Oldenburg'
+];
+
 function allKnownOrteForLand(land) {
   const names = new Set(
     state.assignments.filter(a => (a.land || '').trim().toLowerCase() === (land || '').trim().toLowerCase())
@@ -1207,6 +1216,7 @@ function allKnownOrteForLand(land) {
       if (entry && entry.orte) Object.keys(entry.orte).forEach(o => names.add(o));
     });
   }
+  if (isGermanAssignment({ land })) DEUTSCHLAND_ORTE.forEach(o => names.add(o));
   return [...names].sort((a, b) => a.localeCompare(b, 'de'));
 }
 
