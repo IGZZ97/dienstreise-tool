@@ -1177,7 +1177,8 @@ function sortedAsc() {
 }
 
 function placeLabel(a) {
-  return a.ort ? `${a.ort}, ${a.land}` : (a.land || 'Unbenannt');
+  if (a.ort && a.ort.trim().toLowerCase() !== (a.land || '').trim().toLowerCase()) return `${a.ort}, ${a.land}`;
+  return a.land || 'Unbenannt';
 }
 
 /* ----------------------- autocomplete lists ----------------------- */
@@ -1217,6 +1218,7 @@ function allKnownOrteForLand(land) {
     });
   }
   if (isGermanAssignment({ land })) DEUTSCHLAND_ORTE.forEach(o => names.add(o));
+  if (names.size === 0 && land && land.trim()) names.add(land.trim());
   return [...names].sort((a, b) => a.localeCompare(b, 'de'));
 }
 
