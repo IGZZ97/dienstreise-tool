@@ -201,8 +201,6 @@ button{ cursor:pointer; }
   padding:0;
 }
 
-.link-btn.danger:hover{ color:var(--red); }
-
 .file-label{ cursor:pointer; }
 
 .visually-hidden{
@@ -1874,20 +1872,6 @@ window.addEventListener('afterprint', () => {
 
 /* ----------------------- reset ----------------------- */
 
-function resetAll() {
-  if (!confirm('Wirklich ALLE Dienstreisen und Zeiteinträge unwiderruflich löschen?')) return;
-  if (!confirm('Letzte Sicherheitsabfrage: Wirklich alles löschen? Das kann nicht rückgängig gemacht werden.')) return;
-  state = { assignments: [], abwesenheiten: [], updatedAt: 0, settings: { urlaubstage: 30, sollWochenstunden: 40 } };
-  ui = {
-    expanded: new Set(), showAddAssignment: false, editingAssignmentId: null, addingDayFor: null,
-    editingDayId: null, lastDate: null, localSaveError: false, errorPopup: null, showAllWeeks: false,
-    showSyncSettings: false, syncStatus: 'idle', syncError: null,
-    calendarMonth: null, selectedCalDay: null, showAddAbwesenheit: false, editingAbwesenheitId: null, printSingleId: null
-  };
-  persist();
-  render();
-}
-
 /* ----------------------- render: pieces ----------------------- */
 
 function renderTopbar() {
@@ -2722,7 +2706,6 @@ function render() {
       <span class="footer-actions">
         <button class="link-btn" data-action="export-json">Sicherung exportieren</button>
         <label class="link-btn file-label">Sicherung importieren<input type="file" accept="application/json" class="visually-hidden" data-action="import-json-file"></label>
-        <button class="link-btn danger" data-action="reset-all">Alle Daten löschen</button>
       </span>
     </footer>
     ${renderSingleAssignmentPrintSheet()}
@@ -2925,9 +2908,6 @@ function onClick(e) {
       break;
     case 'print-all':
       printAll();
-      break;
-    case 'reset-all':
-      resetAll();
       break;
     default:
       break;
