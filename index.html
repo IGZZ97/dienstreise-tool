@@ -1050,15 +1050,23 @@ function laenderTabelleVeraltet() {
 
 /* ----------------------- Verpflegungsmehraufwand (§9 Abs. 4a EStG) ----------------------- */
 
-function verpflegungBetrag(tagessatz, isEdge, fruehstueck, mittag, abend) {
+function verpflegungBetrag(tagessatz, isEdge, fruehstueck, mittag, abend, isGerman) {
   const satz = Number(tagessatz) || 0;
   if (satz <= 0) return 0;
-  // An-/Abreisetag = 2/3 des vollen Tagessatzes, auf volle Euro gerundet
-  // (verifiziert gegen die offizielle BMF-Auslandstagegeld-Tabelle: 104/105 Länder stimmen exakt).
-  let betrag = isEdge ? Math.round(satz * 2 / 3) : satz;
-  if (fruehstueck) betrag -= satz * 0.2;
-  if (mittag) betrag -= satz * 0.4;
-  if (abend) betrag -= satz * 0.4;
+  let betrag;
+  if (isGerman) {
+    // Inlandspauschale (§9 Abs. 4a EStG): fester Betrag, KEINE ⅔-Regel wie im Ausland.
+    // 28€ voller Kalendertag, 14€ An-/Abreisetag bzw. Tage mit >8h Abwesenheit. Unverändert seit 2020.
+    betrag = isEdge ? 14 : 28;
+  } else {
+    // An-/Abreisetag = 2/3 des vollen Tagessatzes, auf volle Euro gerundet
+    // (verifiziert gegen die offizielle BMF-Auslandstagegeld-Tabelle: 104/105 Länder stimmen exakt).
+    betrag = isEdge ? Math.round(satz * 2 / 3) : satz;
+  }
+  const kuerzungsBasis = isGerman ? 28 : satz;
+  if (fruehstueck) betrag -= kuerzungsBasis * 0.2;
+  if (mittag) betrag -= kuerzungsBasis * 0.4;
+  if (abend) betrag -= kuerzungsBasis * 0.4;
   return Math.max(Math.round(betrag * 100) / 100, 0);
 }
 
@@ -1080,7 +1088,7 @@ function generateDaysForRange(a, vonDatum, bisDatum, activeWeekdays, arbeitStart
       skipped++;
     } else {
       const tagSpesen = hasTagessatz
-        ? verpflegungBetrag(a.tagessatz, isEdgeDay(a, cur), fruehstueck, mittag, abend)
+        ? verpflegungBetrag(a.tagessatz, isEdgeDay(a, cur), fruehstueck, mittag, abend, isGermanAssignment(a))
         : manualSpesen;
       a.tage.push({
         id: uid(), datum: cur, reiseStart: '', reiseEnde: '',
@@ -1170,7 +1178,8 @@ function placeLabel(a) {
 /* ----------------------- autocomplete lists ----------------------- */
 
 function allKnownLaender() {
-  const names = new Set(state.assignments.map(a => (a.land || '').trim()).filter(Boolean));
+  const names = new Set(['Deutschland']);
+  state.assignments.forEach(a => { if ((a.land || '').trim()) names.add(a.land.trim()); });
   if (countryRatesByYear) {
     Object.values(countryRatesByYear).forEach(yearData => {
       if (yearData && yearData.saetze) Object.keys(yearData.saetze).forEach(l => names.add(l));
@@ -2462,14 +2471,16 @@ function renderDayRow(a, d) {
 function renderVerpflegungBlock(a, existingDay, dateISO, existingSpesen) {
   const hasTagessatz = a.tagessatz > 0;
   const edge = isEdgeDay(a, dateISO);
+  const isGerman = isGermanAssignment(a);
   const suggestion = (hasTagessatz && !(existingSpesen && Number(existingSpesen) > 0))
-    ? verpflegungBetrag(a.tagessatz, edge, false, false, false)
+    ? verpflegungBetrag(a.tagessatz, edge, false, false, false, isGerman)
     : null;
   const fr = !!(existingDay && existingDay.fruehstueck);
   const mi = !!(existingDay && existingDay.mittag);
   const ab = !!(existingDay && existingDay.abend);
+  const edgeLabel = isGerman ? 'An-/Abreisetag = 14 €' : 'An-/Abreisetag = ⅔';
   const label = hasTagessatz
-    ? `🍽️ Verpflegung (${esc(a.land)}, ${fmtEuro(a.tagessatz)}/Tag, ${edge ? 'An-/Abreisetag = ⅔' : 'voller Tag'})`
+    ? `🍽️ Verpflegung (${esc(a.land)}, ${fmtEuro(a.tagessatz)}/Tag, ${edge ? edgeLabel : 'voller Tag'})`
     : '🍽️ Mahlzeiten an diesem Tag (für die eigene Übersicht)';
   return {
     html: `
@@ -3165,7 +3176,7 @@ function recalcVerpflegung(form) {
   const fr = form.querySelector('input[name="mahlzeit_fruehstueck"]');
   const mi = form.querySelector('input[name="mahlzeit_mittag"]');
   const ab = form.querySelector('input[name="mahlzeit_abend"]');
-  const betrag = verpflegungBetrag(a.tagessatz, edge, fr && fr.checked, mi && mi.checked, ab && ab.checked);
+  const betrag = verpflegungBetrag(a.tagessatz, edge, fr && fr.checked, mi && mi.checked, ab && ab.checked, isGermanAssignment(a));
   spesenInput.value = betrag > 0 ? betrag.toFixed(2) : '';
 }
 

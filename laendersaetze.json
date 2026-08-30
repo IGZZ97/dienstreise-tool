@@ -1285,6 +1285,11 @@
       "tag": 42,
       "uebernachtung": 125
      }
+    },
+    "Deutschland": {
+     "default": {
+      "tag": 28
+     }
     }
    }
   },
@@ -1443,6 +1448,11 @@
     "Mexiko": {
      "default": {
       "tag": 40
+     }
+    },
+    "Deutschland": {
+     "default": {
+      "tag": 28
      }
     }
    }
