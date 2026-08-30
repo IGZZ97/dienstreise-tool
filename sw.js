@@ -2,7 +2,7 @@
 // Das ist der Auslöser, der den Update-Mechanismus in Gang setzt: der Browser
 // vergleicht sw.js byteweise mit der vorherigen Version - ändert sich hier nichts,
 // wird auch kein Update erkannt, selbst wenn index.html sich geändert hat.
-const CACHE_VERSION = 'dienstreise-cache-v8';
+const CACHE_VERSION = 'dienstreise-cache-v9';
 
 const APP_SHELL = [
   './',

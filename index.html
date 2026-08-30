@@ -286,6 +286,13 @@ button{ cursor:pointer; }
 
 .combo-input:focus{ background:var(--paper); border-color:var(--steel); }
 
+.combo-wrap.combo-has-options .combo-input{ padding-right:30px; }
+
+.combo-wrap.combo-has-options::after{
+  content:"▾"; position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  color:var(--steel); font-size:13px; pointer-events:none;
+}
+
 .combo-wrap.combo-open .combo-input{ border-color:var(--steel); border-bottom-left-radius:0; border-bottom-right-radius:0; }
 
 .combo-dropdown{
@@ -1215,9 +1222,9 @@ function renderKundeDatalist(idSuffix) {
 
 /* ----------------------- durchsuchbares Dropdown (Land/Ort) ----------------------- */
 
-function comboFieldHTML(name, value, placeholder, source, required) {
+function comboFieldHTML(name, value, placeholder, source, required, hasOptions) {
   return `
-    <div class="combo-wrap" role="combobox" aria-expanded="false">
+    <div class="combo-wrap ${hasOptions ? 'combo-has-options' : ''}" role="combobox" aria-expanded="false">
       <input type="text" name="${name}" class="combo-input" autocomplete="off" ${required ? 'required' : ''}
         placeholder="${esc(placeholder)}" value="${esc(value || '')}" data-combo-source="${source}">
       <div class="combo-dropdown" role="listbox"></div>
@@ -2353,10 +2360,10 @@ function renderAddAssignmentForm() {
       <div class="panel-title">Neue Dienstreise anlegen</div>
       <div class="form-grid">
         <label class="field"><span class="field-label">Land *</span>
-          ${comboFieldHTML('land', '', 'Land wählen oder tippen', 'land', true)}
+          ${comboFieldHTML('land', '', 'Land wählen oder tippen', 'land', true, true)}
         </label>
         <label class="field"><span class="field-label">Ort</span>
-          ${comboFieldHTML('ort', '', 'z.B. Barcelona', 'ort', false)}
+          ${comboFieldHTML('ort', '', 'Ort wählen oder tippen', 'ort', false, false)}
         </label>
         <label class="field"><span class="field-label">Kunde</span>
           <input type="text" name="kunde" placeholder="z.B. Musterpharma GmbH" list="kunde-list-add" autocomplete="off">
@@ -2413,10 +2420,10 @@ function renderEditAssignmentForm(a) {
       <div class="panel-title">Dienstreise bearbeiten</div>
       <div class="form-grid">
         <label class="field"><span class="field-label">Land *</span>
-          ${comboFieldHTML('land', a.land, 'Land wählen oder tippen', 'land', true)}
+          ${comboFieldHTML('land', a.land, 'Land wählen oder tippen', 'land', true, true)}
         </label>
         <label class="field"><span class="field-label">Ort</span>
-          ${comboFieldHTML('ort', a.ort, 'z.B. Barcelona', 'ort', false)}
+          ${comboFieldHTML('ort', a.ort, 'Ort wählen oder tippen', 'ort', false, allKnownOrteForLand(a.land).length > 0)}
         </label>
         <label class="field"><span class="field-label">Kunde</span>
           <input type="text" name="kunde" value="${esc(a.kunde || '')}" list="kunde-list-edit-${a.id}" autocomplete="off">
@@ -3225,6 +3232,14 @@ function onChange(e) {
   );
   if (landOrStartInput) {
     const form = landOrStartInput.closest('form');
+    if (landOrStartInput.matches('input[name="land"]')) {
+      const ortInput = form.querySelector('input[name="ort"]');
+      const ortWrap = ortInput && ortInput.closest('.combo-wrap');
+      if (ortWrap) {
+        const hasOrte = allKnownOrteForLand(landOrStartInput.value).length > 0;
+        ortWrap.classList.toggle('combo-has-options', hasOrte);
+      }
+    }
     tryAutofillTagessatz(form);
     return;
   }
