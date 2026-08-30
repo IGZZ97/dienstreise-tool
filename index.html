@@ -1561,6 +1561,24 @@ async function persist() {
       'Deine letzte Änderung konnte nicht dauerhaft gespeichert werden. Sie bleibt für diese Sitzung sichtbar, geht aber beim Schließen verloren. Bitte exportiere zur Sicherheit eine Sicherung (unten in der Fußzeile).');
   }
   lastPersistOk = ok;
+  if (ok) scheduleAutoSync();
+}
+
+let autoSyncTimer = null;
+const AUTO_SYNC_DELAY_MS = 1500; // kurze Pause, damit mehrere schnelle Änderungen (z.B. Serienerfassung) gebündelt werden
+
+function scheduleAutoSync() {
+  const cfg = getSyncConfig();
+  if (!cfg) return; // kein Cloud-Sync eingerichtet -> nichts zu tun, keine ungefragten Panels öffnen
+  clearTimeout(autoSyncTimer);
+  autoSyncTimer = setTimeout(() => {
+    if (ui.syncStatus === 'running') {
+      // Es läuft gerade schon ein Sync (z.B. von einer vorherigen schnellen Änderung) - kurz später erneut versuchen.
+      scheduleAutoSync();
+      return;
+    }
+    doSync(true);
+  }, AUTO_SYNC_DELAY_MS);
 }
 
 /* ----------------------- Cloud-Sync (jsonbin.io, pro Person ein eigenes Konto) ----------------------- */
@@ -1621,11 +1639,13 @@ async function jsonbinUpdate(apiKey, binId, data) {
   if (!res.ok) throw new Error(`Speichern fehlgeschlagen (Status ${res.status}).`);
 }
 
-async function doSync() {
+async function doSync(silent) {
   const cfg = getSyncConfig();
   if (!cfg) {
-    ui.showSyncSettings = true;
-    render();
+    if (!silent) {
+      ui.showSyncSettings = true;
+      render();
+    }
     return;
   }
   ui.syncStatus = 'running';
@@ -1654,7 +1674,14 @@ async function doSync() {
   } catch (e) {
     ui.syncStatus = 'error';
     ui.syncError = (e && e.message) ? e.message : 'Unbekannter Fehler beim Sync.';
-    showError('Sync fehlgeschlagen', ui.syncError);
+    if (!silent) {
+      showError('Sync fehlgeschlagen', ui.syncError);
+    } else {
+      // Automatischer Sync fehlgeschlagen (z.B. kurzzeitig kein Netz) - nach einer längeren Pause
+      // selbstständig erneut versuchen, ohne dass der Nutzer etwas tun muss.
+      clearTimeout(doSync._retryTimeout);
+      doSync._retryTimeout = setTimeout(() => doSync(true), 30000);
+    }
   }
   render();
   clearTimeout(doSync._resetTimeout);
@@ -2242,10 +2269,10 @@ function renderSyncBar() {
     statusText = 'Noch kein Cloud-Sync eingerichtet – Daten bleiben lokal auf diesem Gerät.';
   } else if (running) {
     statusText = 'Synchronisiere …';
-  } else if (pending) {
-    statusText = 'Ungesicherte Änderungen – jetzt synchronisieren';
   } else if (ui.syncStatus === 'error') {
     statusText = `Sync fehlgeschlagen: ${esc(ui.syncError || '')}`;
+  } else if (pending) {
+    statusText = 'Synchronisiert in Kürze automatisch …';
   } else if (ui.syncStatus === 'ok') {
     statusText = 'Synchronisiert ✓';
   } else if (cfg.lastSyncedAt) {
@@ -2275,6 +2302,7 @@ function renderSyncSettingsPanel(cfg) {
       <p class="panel-hint">
         Kostenloses eigenes Konto auf <span class="mono">jsonbin.io</span> anlegen, den "X-Master-Key" aus dem
         Dashboard hier eintragen. Dein Konto, deine Daten – niemand sonst hat Zugriff.
+        Nach jeder Änderung wird automatisch im Hintergrund synchronisiert.
       </p>
       <div class="form-grid">
         <label class="field field-wide"><span class="field-label">Master-Key (jsonbin.io) *</span>
